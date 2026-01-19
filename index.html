@@ -16,18 +16,71 @@
 </head>
 <body>
 
-    <nav class="bg-white/90 backdrop-blur-md border-b border-gray-100 py-6 px-12 flex justify-between items-center sticky top-0 z-50">
-        <div class="flex items-center">
-        </div>
-        <div class="hidden md:flex gap-12 font-bold text-[11px] uppercase tracking-[0.2em] text-gray-400">
+    <nav class="bg-white/90 backdrop-blur-md border-b border-gray-100 py-4 px-6 md:py-6 md:px-12 flex justify-between items-center sticky top-0 z-50">
+        
+        <button onclick="toggleMenu()" class="md:hidden p-2 text-[#0a2240] hover:bg-gray-100 rounded-lg transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+
+        <div class="hidden md:flex gap-12 font-bold text-[11px] uppercase tracking-[0.2em] text-gray-400 absolute left-1/2 transform -translate-x-1/2">
             <a href="#ranking" class="hover:text-[#0a2240] transition-colors">Ranking</a>
             <a href="#proximos-eventos" class="hover:text-[#0a2240] transition-colors">Calendário</a>
             <a href="#campeoes" class="hover:text-[#0a2240] transition-colors">Hall da Fama</a>
         </div>
-        <a href="https://chat.whatsapp.com/GtbH7LexnG53Oot2pWfOOl" target="_blank" class="bg-[#25D366] text-white px-8 py-3 rounded-full font-black text-[10px] tracking-widest shadow-lg hover:scale-105 transition-all">
-            WHATSAPP
+
+        <a href="https://chat.whatsapp.com/GtbH7LexnG53Oot2pWfOOl" target="_blank" class="bg-[#25D366] text-white px-4 py-2 md:px-8 md:py-3 rounded-full font-black text-[9px] md:text-[10px] tracking-widest shadow-lg hover:scale-105 transition-all flex items-center gap-2">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            <span class="md:inline">WHATSAPP</span>
         </a>
     </nav>
+
+   <div id="mobile-menu-overlay" class="fixed inset-0 bg-[#0a2240] z-[60] hidden flex-col items-center justify-center gap-8 opacity-0 transition-opacity duration-300">
+        
+        <div class="absolute top-[-10%] right-[-10%] w-64 h-64 bg-red-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+        <div class="absolute bottom-[-10%] left-[-10%] w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+
+        <button onclick="toggleMenu()" class="absolute top-6 right-6 p-2 text-white/50 hover:text-white hover:bg-white/10 rounded-full transition-all z-10">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+
+        <div class="w-32 mb-4 drop-shadow-2xl z-10">
+            <img src="img/logo-cpj.png" alt="Logo CPJ" class="w-full opacity-90">
+        </div>
+
+        <div class="flex flex-col items-center gap-6 w-full z-10">
+            
+            <a href="#ranking" onclick="toggleMenu()" class="group relative px-8 py-3 text-xl font-bold text-white uppercase tracking-[0.2em] transition-all">
+                <span class="relative z-10 group-hover:text-red-400 transition-colors">Ranking</span>
+                <span class="absolute inset-0 bg-white/5 scale-0 group-hover:scale-100 rounded-xl transition-transform duration-300"></span>
+            </a>
+            
+            <a href="#proximos-eventos" onclick="toggleMenu()" class="group relative px-8 py-3 text-xl font-bold text-white uppercase tracking-[0.2em] transition-all">
+                <span class="relative z-10 group-hover:text-red-400 transition-colors">Calendário</span>
+                <span class="absolute inset-0 bg-white/5 scale-0 group-hover:scale-100 rounded-xl transition-transform duration-300"></span>
+            </a>
+            
+            <a href="#campeoes" onclick="toggleMenu()" class="group relative px-8 py-3 text-xl font-bold text-white uppercase tracking-[0.2em] transition-all">
+                <span class="relative z-10 group-hover:text-red-400 transition-colors">Hall da Fama</span>
+                <span class="absolute inset-0 bg-white/5 scale-0 group-hover:scale-100 rounded-xl transition-transform duration-300"></span>
+            </a>
+            
+            <a href="#gameplays" onclick="toggleMenu()" class="group relative px-8 py-3 text-xl font-bold text-white uppercase tracking-[0.2em] transition-all">
+                <span class="relative z-10 group-hover:text-red-400 transition-colors">Gameplays</span>
+                <span class="absolute inset-0 bg-white/5 scale-0 group-hover:scale-100 rounded-xl transition-transform duration-300"></span>
+            </a>
+
+        </div>
+
+        <div class="absolute bottom-10 text-center z-10">
+             <p class="text-[10px] text-white/40 uppercase tracking-[0.3em] font-bold">Temporada 2026</p>
+             <div class="w-12 h-1 bg-red-600 mx-auto mt-4 rounded-full"></div>
+        </div>
+    </div>
+
+        <p class="absolute bottom-10 text-[10px] text-gray-400 uppercase tracking-[0.3em]">Circuito Pauper Joinville</p>
+    </div>
 
     <header id="home" class="pt-8 pb-16 px-6 text-center max-w-7xl mx-auto">
         <div class="mb-4">
@@ -97,20 +150,36 @@
         <div class="group relative pt-16">
             <div class="bg-white rounded-[2rem] border border-gray-100 shadow-xl p-8 pt-16 text-center group-hover:shadow-2xl transition-all duration-300 border-b-8 border-red-600">
                 <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 w-32 h-32 rounded-full border-8 border-white shadow-lg overflow-hidden z-10">
-                    <img src="IMG/AVATAR GUI.jpeg" alt="Campeão" class="w-full h-full object-cover">
+                    <img src="img\ETAPA01.JPG" alt="Campeão" class="w-full h-full object-cover">
                 </div>
                 
                 <span class="text-[10px] font-black tracking-[0.3em] text-red-600 uppercase block mb-2">Vencedor Etapa #1</span>
-                <h3 class="text-2xl font-black text-cpj-blue mb-2 leading-tight italic">Leonardo Especulator</h3>
+                <h3 class="text-2xl font-black text-cpj-blue mb-2 leading-tight italic">Gustavo Schwarz</h3>
                 
-                <p class="text-[#0a2240] font-bold text-sm uppercase tracking-widest mb-8 opacity-60 italic">Kuldotha Red</p>
+                <p class="text-[#0a2240] font-bold text-sm uppercase tracking-widest mb-8 opacity-60 italic">UB Crab Control</p>
 
-                <a href="https://moxfield.com/decks/MjxXvDDSxk2f_oshjL2YQA" target="_blank" class="inline-block w-full py-5 bg-[#0a2240] text-white rounded-2xl font-black text-xs tracking-widest hover:bg-black transition-all shadow-lg uppercase">
+                <a href="https://moxfield.com/decks/w9Uy3gzcSkKHqNWUzrCY0w" target="_blank" class="inline-block w-full py-5 bg-[#0a2240] text-white rounded-2xl font-black text-xs tracking-widest hover:bg-black transition-all shadow-lg uppercase">
                     View Decklist
                 </a>
             </div>
         </div>
+<div class="group relative pt-16">
+            <div class="bg-white rounded-[2rem] border border-gray-100 shadow-xl p-8 pt-16 text-center group-hover:shadow-2xl transition-all duration-300 border-b-8 border-red-600">
+                <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 w-32 h-32 rounded-full border-8 border-white shadow-lg overflow-hidden z-10">
+                    <img src="img\ETAPA02.JPG" alt="Campeão" class="w-full h-full object-cover">
+                </div>
+                
+                <span class="text-[10px] font-black tracking-[0.3em] text-red-600 uppercase block mb-2">Vencedor Etapa #2</span>
+                
+                <h3 class="text-2xl font-black text-[#0a2240] mb-2 leading-tight italic">Eron Moggio</h3>
+                
+                <p class="text-[#0a2240] font-bold text-sm uppercase tracking-widest mb-8 opacity-60 italic">BW Blade</p>
 
+                <a href="https://moxfield.com/decks/21u9iqGsAke7C-Y1ae2zog" target="_blank" class="inline-block w-full py-5 bg-[#0a2240] text-white rounded-2xl font-black text-xs tracking-widest hover:bg-black transition-all shadow-lg uppercase">
+                    View Decklist
+                </a>
+            </div>
+        </div>
         </div>
 </section>
 
@@ -171,21 +240,65 @@
 
             tbody.innerHTML = listaParaExibir.map((linha, index) => {
                 const colunas = linha.split(',');
-                const posReal = inicio + index + 1;
+                
+                // 1. PEGA OS DADOS (Agora lendo a 4ª coluna também)
                 const nome = colunas[1]?.trim() || "---";
                 const pontos = colunas[2]?.trim() || "0";
+                const variacao = colunas[3]?.trim() || "0"; // <--- AQUI ESTÁ O SEGREDO (Coluna D)
+
+                // 2. CALCULA A POSIÇÃO REAL
+                const posReal = inicio + index + 1;
+
+                // 3. CORES DO PÓDIO (1º, 2º e 3º lugar)
                 let corPos = 'text-gray-400';
                 if (posReal === 1) corPos = 'text-yellow-500';
                 if (posReal === 2) corPos = 'text-gray-400 font-bold';
                 if (posReal === 3) corPos = 'text-amber-600';
+
+                // 4. LÓGICA DAS SETINHAS (Variação)
+                let htmlVariacao = '<span class="text-gray-300 text-[10px]">-</span>'; // Padrão (igual)
+
+                if (variacao === 'NEW') {
+                     // Caso seja novo jogador
+                     htmlVariacao = '<span class="text-blue-500 text-[9px] font-black tracking-tighter uppercase bg-blue-50 px-1 rounded border border-blue-100">NEW</span>';
+                } else {
+                    const val = parseInt(variacao);
+                    if (val > 0) {
+                        // Subiu (Verde)
+                        htmlVariacao = `
+                            <div class="flex items-center gap-1 text-green-500 bg-green-50 px-1.5 py-0.5 rounded border border-green-100">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+                                <span class="text-[10px] font-black">${val}</span>
+                            </div>`;
+                    } else if (val < 0) {
+                        // Desceu (Vermelho)
+                        htmlVariacao = `
+                            <div class="flex items-center gap-1 text-red-500 bg-red-50 px-1.5 py-0.5 rounded border border-red-100">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                                <span class="text-[10px] font-black">${Math.abs(val)}</span>
+                            </div>`;
+                    }
+                }
+
                 return `
-                    <tr class="hover:bg-gray-50 transition">
-                        <td class="p-6 font-black text-xl ${corPos} italic w-20 text-center">${posReal}º</td>
-                        <td class="p-6 font-bold text-gray-800 uppercase tracking-tight text-left">${nome}</td>
-                        <td class="p-6 text-right font-black text-cpj-blue italic">${pontos} pts</td>
+                    <tr class="hover:bg-gray-50 transition border-b border-gray-50 last:border-0">
+                        <td class="p-6 font-black text-xl ${corPos} italic w-24 text-center">
+                            <div class="flex flex-col items-center gap-2">
+                                <span>${posReal}º</span>
+                                ${htmlVariacao}
+                            </div>
+                        </td>
+                        <td class="p-6 font-bold text-gray-800 uppercase tracking-tight text-left align-middle">
+                            ${nome}
+                        </td>
+                        <td class="p-6 text-right font-black text-[#0a2240] italic align-middle text-lg">
+                            ${pontos} <span class="text-[10px] text-gray-400 font-normal not-italic ml-1">PTS</span>
+                        </td>
                     </tr>
                 `;
             }).join('');
+
+            // ATUALIZA O RODAPÉ DA TABELA
             document.getElementById('info-pagina').innerText = `Página ${paginaAtual}`;
             document.getElementById('info-posicao').innerText = `Mostrando ${inicio + 1}-${Math.min(fim, rankingCompleto.length)}`;
             document.getElementById('btn-prev').disabled = paginaAtual === 1;
@@ -198,11 +311,14 @@
             document.getElementById('ranking').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // LÓGICA DO CALENDÁRIO
+    // LÓGICA DO CALENDÁRIO
         const etapas = [
-            { n: '01', data: '06/01/2026', valor: 'R$ 20,00', local: 'Magi Games' },
-            { n: '02', data: '13/01/2026', valor: 'R$ 20,00', local: 'Magi Games' },
-            { n: '03', data: '20/01/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            // ADICIONEI O "status" NAS 3 PRIMEIRAS:
+            { n: '01', data: '06/01/2026', valor: 'R$ 20,00', local: 'Magi Games', status: 'done' },
+            { n: '02', data: '13/01/2026', valor: 'R$ 20,00', local: 'Magi Games', status: 'done' },
+            { n: '03', data: '20/01/2026', valor: 'R$ 20,00', local: 'Magi Games', status: 'next' },
+            
+            // As outras continuam normais (sem status):
             { n: '04', data: '27/01/2026', valor: 'R$ 20,00', local: 'Magi Games' },
             { n: '05', data: '03/02/2026', valor: 'R$ 20,00', local: 'Magi Games' },
             { n: '06', data: '10/02/2026', valor: 'R$ 20,00', local: 'Magi Games' },
@@ -213,14 +329,34 @@
         ];
 
         let expandido = false;
+
         function renderCalendario() {
             const container = document.getElementById('calendario-container');
-            const listaParaExibir = expandido ? etapas : etapas.slice(0, 4);
-            container.innerHTML = listaParaExibir.map(e => `
-                <div class="flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border border-gray-100 hover:border-cpj-red hover:shadow-md transition-all group bg-white">
-                    <div class="mb-3 md:mb-0">
-                        <span class="text-[9px] font-black ${e.n === '01' ? 'text-red-600' : 'text-gray-400'} uppercase tracking-widest">Etapa ${e.n}</span>
-                        <h3 class="text-md font-black text-cpj-blue uppercase italic">Circuito Pauper Joinville</h3>
+            // Agora mostra 5 itens no início para garantir que a "próxima" apareça se for a 3 ou 4
+            const listaParaExibir = expandido ? etapas : etapas.slice(0, 5); 
+
+            container.innerHTML = listaParaExibir.map(e => {
+                // Lógica dos visuais (DONE e NEXT)
+                let visualClasses = 'border-gray-100 hover:border-cpj-red'; // Padrão
+                let badge = '';
+
+                if (e.status === 'done') {
+                    visualClasses = 'border-green-100 bg-gray-50 opacity-60'; // Fica mais apagadinho
+                    badge = '<span class="bg-green-100 text-green-700 border border-green-200 px-2 py-1 rounded text-[9px] font-black uppercase tracking-widest">Concluído</span>';
+                } 
+                else if (e.status === 'next') {
+                    visualClasses = 'border-red-600 shadow-lg ring-1 ring-red-100 bg-white transform scale-[1.02]'; // Ganha destaque
+                    badge = '<span class="bg-red-600 text-white px-3 py-1 rounded text-[9px] font-black uppercase tracking-widest animate-pulse shadow-md">Próxima Etapa</span>';
+                }
+
+                return `
+                <div class="flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border transition-all group ${visualClasses}">
+                    <div class="mb-3 md:mb-0 flex flex-col gap-2">
+                        <div class="flex items-center gap-3">
+                            <span class="text-[9px] font-black ${e.status === 'next' ? 'text-red-600' : 'text-gray-400'} uppercase tracking-widest">Etapa ${e.n}</span>
+                            ${badge}
+                        </div>
+                        <h3 class="text-md font-black text-[#0a2240] uppercase italic">Circuito Pauper Joinville</h3>
                     </div>
                     <div class="grid grid-cols-3 md:flex gap-6 text-[11px] font-bold uppercase text-gray-600">
                         <div class="flex flex-col"><span class="text-gray-400 text-[9px] mb-1 font-normal">Data</span>${e.data}</div>
@@ -228,7 +364,7 @@
                         <div class="flex flex-col"><span class="text-gray-400 text-[9px] mb-1 font-normal">Local</span>${e.local}</div>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         function toggleCalendario() {
@@ -243,6 +379,30 @@
         // Inicialização
         carregarRanking();
         renderCalendario();
+
+        // FUNÇÃO MENU MOBILE
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu-overlay');
+            
+            if (menu.classList.contains('hidden')) {
+                // ABRIR
+                menu.classList.remove('hidden');
+                // Pequeno delay para a animação de opacidade funcionar
+                setTimeout(() => {
+                    menu.classList.remove('opacity-0');
+                    menu.classList.add('opacity-100');
+                }, 10);
+            } else {
+                // FECHAR
+                menu.classList.remove('opacity-100');
+                menu.classList.add('opacity-0');
+                // Espera a animação terminar para esconder de verdade
+                setTimeout(() => {
+                    menu.classList.add('hidden');
+                }, 300);
+            }
+        }
     </script>
+    
 </body>
 </html>
