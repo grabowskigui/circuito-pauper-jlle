@@ -77,6 +77,9 @@
              <p class="text-[10px] text-white/40 uppercase tracking-[0.3em] font-bold">Temporada 2026</p>
              <div class="w-12 h-1 bg-red-600 mx-auto mt-4 rounded-full"></div>
         </div>
+    </div>
+
+    </div>
 
     <header id="home" class="pt-8 pb-16 px-6 text-center max-w-7xl mx-auto">
         <div class="mb-4">
@@ -97,16 +100,16 @@
         <div class="max-w-4xl mx-auto text-center">
             <h2 class="text-4xl font-black uppercase italic tracking-tighter text-cpj-blue mb-12">Ranking Geral</h2>
             <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 min-h-[500px]">
-                <table class="w-full text-sm">
-                    <thead>
-                        <tr class="text-left text-[10px] uppercase tracking-widest text-gray-400 border-b">
-                            <th class="p-6 text-center">Pos</th>
-                            <th class="p-6">Jogador</th>
-                            <th class="p-6 text-right">Pontos</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabela-ranking-body" class="divide-y divide-gray-50"></tbody>
-                </table>
+               <table class="w-full text-sm table-fixed">
+    <thead>
+        <tr class="text-left text-[10px] uppercase tracking-widest text-gray-400 border-b">
+            <th class="w-[15%] py-3 text-center">Pos</th>
+            <th class="w-[60%] py-3 pl-2">Jogador</th>
+            <th class="w-[25%] py-3 text-right pr-4">Pontos</th>
+        </tr>
+    </thead>
+    <tbody id="tabela-ranking-body" class="divide-y divide-gray-50"></tbody>
+</table>
             </div>
             <div class="mt-10 flex justify-center items-center gap-6">
                 <button onclick="mudarPagina(-1)" id="btn-prev" class="p-3 rounded-full border border-gray-200 text-gray-400 hover:border-cpj-red hover:text-cpj-red disabled:opacity-30 disabled:cursor-not-allowed transition-all">
@@ -121,6 +124,30 @@
                 </button>
             </div>
         </div>
+    </section>
+
+<section class="py-20 bg-white px-6 border-t border-gray-100">
+        <div class="max-w-4xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                <div>
+                    <h2 class="text-4xl font-black text-[#0a2240] uppercase italic tracking-tighter">Meta Game</h2>
+                    <p class="text-gray-400 font-bold uppercase text-[10px] tracking-[0.3em] mt-2">O que está dominando o field</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Baseado nos últimos torneios</span>
+                </div>
+            </div>
+
+            <div id="meta-game-container" class="grid gap-6 transition-all duration-500">
+                <p class="text-center text-gray-400 text-xs animate-pulse">Carregando estatísticas...</p>
+            </div>
+
+            <div id="meta-btn-container" class="text-center mt-10 hidden">
+                <button onclick="toggleMetaGame()" id="btn-meta-expandir" class="inline-flex items-center gap-2 border-2 border-gray-100 text-gray-400 font-black text-xs px-8 py-4 rounded-full hover:border-cpj-red hover:text-cpj-red transition-all uppercase tracking-widest">
+                    <span>Ver Meta Completo</span>
+                    <svg id="seta-meta" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+            </div>
     </section>
 
     <section id="proximos-eventos" class="py-24 px-6 bg-white">
@@ -228,7 +255,7 @@
             }
         }
 
-        function renderRanking() {
+function renderRanking() {
             const tbody = document.getElementById('tabela-ranking-body');
             const inicio = (paginaAtual - 1) * jogadoresPorPagina;
             const fim = inicio + jogadoresPorPagina;
@@ -237,37 +264,34 @@
             tbody.innerHTML = listaParaExibir.map((linha, index) => {
                 const colunas = linha.split(',');
                 
-                // 1. PEGA OS DADOS (Agora lendo a 4ª coluna também)
+                // 1. PEGA OS DADOS
                 const nome = colunas[1]?.trim() || "---";
                 const pontos = colunas[2]?.trim() || "0";
-                const variacao = colunas[3]?.trim() || "0"; // <--- AQUI ESTÁ O SEGREDO (Coluna D)
+                const variacao = colunas[3]?.trim() || "0"; 
 
                 // 2. CALCULA A POSIÇÃO REAL
                 const posReal = inicio + index + 1;
 
-                // 3. CORES DO PÓDIO (1º, 2º e 3º lugar)
+                // 3. CORES DO PÓDIO
                 let corPos = 'text-gray-400';
                 if (posReal === 1) corPos = 'text-yellow-500';
                 if (posReal === 2) corPos = 'text-gray-400 font-bold';
                 if (posReal === 3) corPos = 'text-amber-600';
 
-                // 4. LÓGICA DAS SETINHAS (Variação)
-                let htmlVariacao = '<span class="text-gray-300 text-[10px]">-</span>'; // Padrão (igual)
+                // 4. LÓGICA DAS SETINHAS
+                let htmlVariacao = '<span class="text-gray-300 text-[10px]">-</span>'; 
 
                 if (variacao === 'NEW') {
-                     // Caso seja novo jogador
-                     htmlVariacao = '<span class="text-blue-500 text-[9px] font-black tracking-tighter uppercase bg-blue-50 px-1 rounded border border-blue-100">NEW</span>';
+                      htmlVariacao = '<span class="text-blue-500 text-[9px] font-black tracking-tighter uppercase bg-blue-50 px-1 rounded border border-blue-100">NEW</span>';
                 } else {
                     const val = parseInt(variacao);
                     if (val > 0) {
-                        // Subiu (Verde)
                         htmlVariacao = `
                             <div class="flex items-center gap-1 text-green-500 bg-green-50 px-1.5 py-0.5 rounded border border-green-100">
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
                                 <span class="text-[10px] font-black">${val}</span>
                             </div>`;
                     } else if (val < 0) {
-                        // Desceu (Vermelho)
                         htmlVariacao = `
                             <div class="flex items-center gap-1 text-red-500 bg-red-50 px-1.5 py-0.5 rounded border border-red-100">
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
@@ -276,27 +300,34 @@
                     }
                 }
 
+                // 5. RETORNA O HTML DA LINHA (Com layout travado)
                 return `
-                    <tr class="hover:bg-gray-50 transition border-b border-gray-50 last:border-0">
-                        <td class="p-6 font-black text-xl ${corPos} italic w-24 text-center">
-                            <div class="flex flex-col items-center gap-2">
+                    <tr class="hover:bg-gray-50 transition border-b border-gray-50 last:border-0 h-16">
+                        <td class="font-black text-lg md:text-xl ${corPos} italic text-center align-middle">
+                            <div class="flex flex-col items-center justify-center gap-1">
                                 <span>${posReal}º</span>
                                 ${htmlVariacao}
                             </div>
                         </td>
-                        <td class="p-6 font-bold text-gray-800 uppercase tracking-tight text-left align-middle">
-                            ${nome}
+                        
+                        <td class="font-bold text-gray-800 uppercase tracking-tight text-left align-middle text-xs md:text-sm pl-2">
+                            <div class="truncate w-full pr-2">
+                                ${nome}
+                            </div>
                         </td>
-                        <td class="p-6 text-right font-black text-[#0a2240] italic align-middle text-lg">
-                            ${pontos} <span class="text-[10px] text-gray-400 font-normal not-italic ml-1">PTS</span>
+                        
+                        <td class="text-right font-black text-[#0a2240] italic align-middle text-sm md:text-lg pr-4">
+                            ${pontos} <span class="text-[8px] md:text-[10px] text-gray-400 font-normal not-italic">PTS</span>
                         </td>
                     </tr>
                 `;
-            }).join('');
+            }).join(''); 
 
-            // ATUALIZA O RODAPÉ DA TABELA
+            // ATUALIZA RODAPÉ
             document.getElementById('info-pagina').innerText = `Página ${paginaAtual}`;
-            document.getElementById('info-posicao').innerText = `Mostrando ${inicio + 1}-${Math.min(fim, rankingCompleto.length)}`;
+            if(rankingCompleto.length > 0) {
+                 document.getElementById('info-posicao').innerText = `Mostrando ${inicio + 1}-${Math.min(fim, rankingCompleto.length)}`;
+            }
             document.getElementById('btn-prev').disabled = paginaAtual === 1;
             document.getElementById('btn-next').disabled = fim >= rankingCompleto.length;
         }
@@ -398,6 +429,89 @@
                 }, 300);
             }
         }
+
+// --- LÓGICA DO META GAME (COM BOTÃO "VER MAIS") ---
+        const META_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ1-fHtMSqio6beIEqEiTB9LwyyqMyJ2OV1MbvNipdXPPEJlvsIF45EEhv6mNhF5caAAN73aWSZ-Pua/pub?gid=1925365919&single=true&output=csv';
+        
+        let metaDadosCache = []; // Guarda os dados aqui para não baixar de novo
+        let metaExpandido = false; // Começa fechado
+
+        async function carregarMetaGame() {
+            try {
+                const response = await fetch(META_CSV_URL);
+                const data = await response.text();
+                const linhas = data.split('\n').filter(l => l.trim() !== "");
+                
+                let totalDecks = 0;
+                
+                // Processa os dados e guarda na variável global 'metaDadosCache'
+                metaDadosCache = linhas.map(linha => {
+                    const colunas = linha.split(',');
+                    const nome = colunas[0]?.trim();
+                    const qtd = parseInt(colunas[1]?.trim() || "0");
+                    
+                    if(nome && qtd) {
+                        totalDecks += qtd;
+                        return { nome, qtd };
+                    }
+                    return null;
+                }).filter(i => i !== null);
+
+                // Adiciona o total de decks em cada item para calcular % depois
+                metaDadosCache.forEach(d => d.totalGeral = totalDecks);
+
+                // Chama a função que desenha na tela
+                renderMetaVisual();
+
+            } catch (error) {
+                console.error("Erro meta:", error);
+                document.getElementById('meta-game-container').innerHTML = '<p class="text-center text-red-500 text-xs">Erro.</p>';
+            }
+        }
+
+        function renderMetaVisual() {
+            const container = document.getElementById('meta-game-container');
+            const btnContainer = document.getElementById('meta-btn-container');
+            
+            // Aqui é o segredo: Se estiver expandido mostra tudo, senão só os 4 primeiros
+            const listaParaExibir = metaExpandido ? metaDadosCache : metaDadosCache.slice(0, 4);
+            
+            container.innerHTML = '';
+
+            listaParaExibir.forEach(deck => {
+                const porcentagem = ((deck.qtd / deck.totalGeral) * 100).toFixed(1); 
+                
+                container.innerHTML += `
+                    <div class="group animate-in fade-in slide-in-from-bottom-4 duration-700">
+                        <div class="flex justify-between text-sm font-bold text-[#0a2240] uppercase tracking-wider mb-2">
+                            <span>${deck.nome}</span>
+                            <span>${porcentagem}% <span class="text-[9px] text-gray-400 font-normal">(${deck.qtd})</span></span>
+                        </div>
+                        <div class="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
+                            <div class="bg-red-600 h-3 rounded-full group-hover:bg-[#0a2240] transition-all duration-1000" style="width: ${porcentagem}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Só mostra o botão se tiver mais de 4 decks no total
+            if (metaDadosCache.length > 4) {
+                btnContainer.classList.remove('hidden');
+                
+                // Atualiza o texto e a seta do botão
+                const btn = document.getElementById('btn-meta-expandir');
+                const seta = document.getElementById('seta-meta');
+                btn.querySelector('span').innerText = metaExpandido ? 'Mostrar Menos' : 'Ver Meta Completo';
+                seta.style.transform = metaExpandido ? 'rotate(180deg)' : 'rotate(0deg)';
+            }
+        }
+
+        function toggleMetaGame() {
+            metaExpandido = !metaExpandido;
+            renderMetaVisual(); // Redesenha a tela
+        }
+
+        carregarMetaGame();
     </script>
     
 </body>
