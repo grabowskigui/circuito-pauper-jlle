@@ -12,6 +12,9 @@
         .text-cpj-blue { color: var(--cpj-blue); }
         .bg-cpj-blue { background-color: var(--cpj-blue); }
         .border-cpj-red { border-color: var(--cpj-red); }
+        /* Esconde barra de rolagem mas permite scroll horizontal se necessário */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body>
@@ -37,7 +40,6 @@
     </nav>
 
    <div id="mobile-menu-overlay" class="fixed inset-0 bg-[#0a2240] z-[60] hidden flex-col items-center justify-center gap-8 opacity-0 transition-opacity duration-300">
-        
         <div class="absolute top-[-10%] right-[-10%] w-64 h-64 bg-red-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
         <div class="absolute bottom-[-10%] left-[-10%] w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
 
@@ -50,36 +52,23 @@
         </div>
 
         <div class="flex flex-col items-center gap-6 w-full z-10">
-            
             <a href="#ranking" onclick="toggleMenu()" class="group relative px-8 py-3 text-xl font-bold text-white uppercase tracking-[0.2em] transition-all">
                 <span class="relative z-10 group-hover:text-red-400 transition-colors">Ranking</span>
                 <span class="absolute inset-0 bg-white/5 scale-0 group-hover:scale-100 rounded-xl transition-transform duration-300"></span>
             </a>
-            
             <a href="#proximos-eventos" onclick="toggleMenu()" class="group relative px-8 py-3 text-xl font-bold text-white uppercase tracking-[0.2em] transition-all">
                 <span class="relative z-10 group-hover:text-red-400 transition-colors">Calendário</span>
                 <span class="absolute inset-0 bg-white/5 scale-0 group-hover:scale-100 rounded-xl transition-transform duration-300"></span>
             </a>
-            
             <a href="#campeoes" onclick="toggleMenu()" class="group relative px-8 py-3 text-xl font-bold text-white uppercase tracking-[0.2em] transition-all">
                 <span class="relative z-10 group-hover:text-red-400 transition-colors">Hall da Fama</span>
                 <span class="absolute inset-0 bg-white/5 scale-0 group-hover:scale-100 rounded-xl transition-transform duration-300"></span>
             </a>
-            
             <a href="#gameplays" onclick="toggleMenu()" class="group relative px-8 py-3 text-xl font-bold text-white uppercase tracking-[0.2em] transition-all">
                 <span class="relative z-10 group-hover:text-red-400 transition-colors">Gameplays</span>
                 <span class="absolute inset-0 bg-white/5 scale-0 group-hover:scale-100 rounded-xl transition-transform duration-300"></span>
             </a>
-
         </div>
-
-        <div class="absolute bottom-10 text-center z-10">
-             <p class="text-[10px] text-white/40 uppercase tracking-[0.3em] font-bold">Temporada 2026</p>
-             <div class="w-12 h-1 bg-red-600 mx-auto mt-4 rounded-full"></div>
-        </div>
-    </div>
-
-        <p class="absolute bottom-10 text-[10px] text-gray-400 uppercase tracking-[0.3em]">Circuito Pauper Joinville</p>
     </div>
 
     <header id="home" class="pt-8 pb-16 px-6 text-center max-w-7xl mx-auto">
@@ -99,19 +88,38 @@
 
     <section id="ranking" class="py-20 bg-gray-50 px-6">
         <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-4xl font-black uppercase italic tracking-tighter text-cpj-blue mb-12">Ranking Geral</h2>
+            <h2 class="text-4xl font-black uppercase italic tracking-tighter text-cpj-blue mb-4">Ranking Geral</h2>
+            
+            <div class="flex justify-center items-center gap-4 mb-8">
+                <button onclick="navegarEtapa(-1)" id="btn-voltar-etapa" class="p-3 bg-white border-2 border-gray-100 rounded-full text-gray-400 hover:border-cpj-red hover:text-cpj-red transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <div class="relative group">
+                    <select id="filtro-etapa" class="appearance-none bg-white border-2 border-gray-100 text-[#0a2240] font-black uppercase tracking-widest text-xs py-3 pl-8 pr-12 rounded-full cursor-pointer hover:border-cpj-red transition-colors focus:outline-none focus:border-cpj-red shadow-sm w-48 text-center">
+                        <option value="">Carregando...</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-cpj-red group-hover:translate-x-1 transition-transform">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                </div>
+                <button onclick="navegarEtapa(1)" id="btn-avancar-etapa" class="p-3 bg-white border-2 border-gray-100 rounded-full text-gray-400 hover:border-cpj-red hover:text-cpj-red transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            </div>
+
             <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 min-h-[500px]">
-                <table class="w-full text-sm">
-                    <thead>
-                        <tr class="text-left text-[10px] uppercase tracking-widest text-gray-400 border-b">
-                            <th class="p-6 text-center">Pos</th>
-                            <th class="p-6">Jogador</th>
-                            <th class="p-6 text-right">Pontos</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabela-ranking-body" class="divide-y divide-gray-50"></tbody>
+               <table class="w-full text-sm table-fixed">
+                <thead>
+                    <tr class="text-left text-[10px] uppercase tracking-widest text-gray-400 border-b">
+                        <th class="w-[15%] py-3 text-center">Pos</th>
+                        <th class="w-[60%] py-3 pl-2">Jogador</th>
+                        <th class="w-[25%] py-3 text-right pr-4">Pontos</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-ranking-body" class="divide-y divide-gray-50"></tbody>
                 </table>
             </div>
+            
             <div class="mt-10 flex justify-center items-center gap-6">
                 <button onclick="mudarPagina(-1)" id="btn-prev" class="p-3 rounded-full border border-gray-200 text-gray-400 hover:border-cpj-red hover:text-cpj-red disabled:opacity-30 disabled:cursor-not-allowed transition-all">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path></svg>
@@ -122,6 +130,29 @@
                 </div>
                 <button onclick="mudarPagina(1)" id="btn-next" class="p-3 rounded-full border border-gray-200 text-gray-400 hover:border-cpj-red hover:text-cpj-red disabled:opacity-30 disabled:cursor-not-allowed transition-all">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-white px-6 border-t border-gray-100">
+        <div class="max-w-4xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                <div>
+                    <h2 class="text-4xl font-black text-[#0a2240] uppercase italic tracking-tighter">Meta Game</h2>
+                    <p class="text-gray-400 font-bold uppercase text-[10px] tracking-[0.3em] mt-2">O que está dominando o field</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Baseado nos últimos torneios</span>
+                </div>
+            </div>
+            <div id="meta-game-container" class="grid gap-6 transition-all duration-500">
+                <p class="text-center text-gray-400 text-xs animate-pulse">Carregando estatísticas...</p>
+            </div>
+            <div id="meta-btn-container" class="text-center mt-10 hidden">
+                <button onclick="toggleMetaGame()" id="btn-meta-expandir" class="inline-flex items-center gap-2 border-2 border-gray-100 text-gray-400 font-black text-xs px-8 py-4 rounded-full hover:border-cpj-red hover:text-cpj-red transition-all uppercase tracking-widest">
+                    <span>Ver Meta Completo</span>
+                    <svg id="seta-meta" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
             </div>
         </div>
@@ -143,45 +174,33 @@
         </div>
     </section>
 
-<section id="campeoes" class="py-24 px-6 max-w-6xl mx-auto border-t border-gray-100">
-    <h2 class="text-4xl font-black text-cpj-blue mb-16 uppercase italic tracking-tighter text-center">🏆 Hall da Fama</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+    <section id="campeoes" class="py-24 px-6 max-w-7xl mx-auto border-t border-gray-100 relative">
+        <h2 class="text-4xl font-black text-cpj-blue mb-16 uppercase italic tracking-tighter text-center">🏆 Hall da Fama</h2>
         
-        <div class="group relative pt-16">
-            <div class="bg-white rounded-[2rem] border border-gray-100 shadow-xl p-8 pt-16 text-center group-hover:shadow-2xl transition-all duration-300 border-b-8 border-red-600">
-                <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 w-32 h-32 rounded-full border-8 border-white shadow-lg overflow-hidden z-10">
-                    <img src="img\ETAPA01.JPG" alt="Campeão" class="w-full h-full object-cover">
-                </div>
-                
-                <span class="text-[10px] font-black tracking-[0.3em] text-red-600 uppercase block mb-2">Vencedor Etapa #1</span>
-                <h3 class="text-2xl font-black text-cpj-blue mb-2 leading-tight italic">Gustavo Schwarz</h3>
-                
-                <p class="text-[#0a2240] font-bold text-sm uppercase tracking-widest mb-8 opacity-60 italic">UB Crab Control</p>
+        <div class="relative flex items-center justify-center gap-4 md:gap-8">
+            
+            <button onclick="moveHall(-1)" id="btn-hall-prev" class="hidden md:flex z-10 p-4 bg-white border border-gray-100 rounded-full shadow-lg text-gray-400 hover:text-cpj-red hover:scale-110 transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:scale-100">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
 
-                <a href="https://moxfield.com/decks/w9Uy3gzcSkKHqNWUzrCY0w" target="_blank" class="inline-block w-full py-5 bg-[#0a2240] text-white rounded-2xl font-black text-xs tracking-widest hover:bg-black transition-all shadow-lg uppercase">
-                    View Decklist
-                </a>
-            </div>
-        </div>
-<div class="group relative pt-16">
-            <div class="bg-white rounded-[2rem] border border-gray-100 shadow-xl p-8 pt-16 text-center group-hover:shadow-2xl transition-all duration-300 border-b-8 border-red-600">
-                <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 w-32 h-32 rounded-full border-8 border-white shadow-lg overflow-hidden z-10">
-                    <img src="img\ETAPA02.JPG" alt="Campeão" class="w-full h-full object-cover">
+            <div id="hall-container" class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl transition-all duration-500">
                 </div>
-                
-                <span class="text-[10px] font-black tracking-[0.3em] text-red-600 uppercase block mb-2">Vencedor Etapa #2</span>
-                
-                <h3 class="text-2xl font-black text-[#0a2240] mb-2 leading-tight italic">Eron Moggio</h3>
-                
-                <p class="text-[#0a2240] font-bold text-sm uppercase tracking-widest mb-8 opacity-60 italic">BW Blade</p>
 
-                <a href="https://moxfield.com/decks/21u9iqGsAke7C-Y1ae2zog" target="_blank" class="inline-block w-full py-5 bg-[#0a2240] text-white rounded-2xl font-black text-xs tracking-widest hover:bg-black transition-all shadow-lg uppercase">
-                    View Decklist
-                </a>
-            </div>
+            <button onclick="moveHall(1)" id="btn-hall-next" class="hidden md:flex z-10 p-4 bg-white border border-gray-100 rounded-full shadow-lg text-gray-400 hover:text-cpj-red hover:scale-110 transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:scale-100">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
+            </button>
         </div>
+        
+        <div class="flex md:hidden justify-center gap-6 mt-8">
+             <button onclick="moveHall(-1)" id="btn-hall-prev-mobile" class="p-4 bg-white border border-gray-100 rounded-full shadow-lg text-gray-400 hover:text-cpj-red disabled:opacity-30">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+            <button onclick="moveHall(1)" id="btn-hall-next-mobile" class="p-4 bg-white border border-gray-100 rounded-full shadow-lg text-gray-400 hover:text-cpj-red disabled:opacity-30">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
+            </button>
         </div>
-</section>
+
+    </section>
 
     <footer class="bg-[#0a2240] text-white py-10 px-6 border-t border-white/5">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8">
@@ -215,110 +234,187 @@
     </footer>
 
     <script>
-        // LÓGICA DO RANKING
+        // --- CONFIGURAÇÕES ---
         const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSs3dG3a3b_rjQlUwFZL3G48wOoTv5OSnnRtNsan7sk56QWe4Lf02uQ8X-ltOoD2kOczcmv6K_387gs/pub?output=csv';
-        let rankingCompleto = [];
+        const META_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ1-fHtMSqio6beIEqEiTB9LwyyqMyJ2OV1MbvNipdXPPEJlvsIF45EEhv6mNhF5caAAN73aWSZ-Pua/pub?gid=1925365919&single=true&output=csv';
+
+        // --- VARIÁVEIS GLOBAIS ---
+        let jogadoresRaw = []; 
+        let totalEtapasReais = 0;   
+        let rankingExibido = []; 
         let paginaAtual = 1;
         const jogadoresPorPagina = 8;
+        
+        // Elementos DOM Ranking
+        const selectEtapa = document.getElementById('filtro-etapa');
+        const btnVoltarEtapa = document.getElementById('btn-voltar-etapa');
+        const btnAvancarEtapa = document.getElementById('btn-avancar-etapa');
 
+        // --- 1. RANKING (CARREGAMENTO E LÓGICA BLINDADA) ---
         async function carregarRanking() {
             try {
-                const response = await fetch(SHEET_CSV_URL);
+                const urlComBypass = `${SHEET_CSV_URL}&t=${Date.now()}`;
+                const response = await fetch(urlComBypass);
                 const data = await response.text();
-                rankingCompleto = data.split('\n').slice(1).filter(l => l.trim() !== "");
-                renderRanking();
+                const linhas = data.split('\n').filter(l => l.trim() !== "");
+                
+                jogadoresRaw = linhas.slice(1).map(linha => {
+                    const colunas = linha.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    const nome = colunas[0]?.replace(/"/g, '').trim() || "Desconhecido";
+                    const pontosHistorico = colunas.slice(1).map(p => {
+                        let valorLimpo = p?.replace(/"/g, '').trim(); 
+                        if (valorLimpo === '-' || valorLimpo === '') return null;
+                        const numero = parseInt(valorLimpo);
+                        return isNaN(numero) ? null : numero;
+                    });
+                    return { nome, pontos: pontosHistorico };
+                });
+
+                if (jogadoresRaw.length > 0) {
+                    const maxColunas = jogadoresRaw[0].pontos.length;
+                    for (let i = 0; i < maxColunas; i++) {
+                        if (jogadoresRaw.some(p => p.pontos[i] !== null)) {
+                            totalEtapasReais = i + 1;
+                        }
+                    }
+                    if (totalEtapasReais === 0) totalEtapasReais = 1;
+                    popularDropdownEtapas(totalEtapasReais);
+                    calcularERenderizar(totalEtapasReais);
+                }
             } catch (error) {
+                console.error("Erro fatal:", error);
                 document.getElementById('tabela-ranking-body').innerHTML = '<tr><td colspan="3" class="p-10 text-red-500 text-center">Erro ao carregar dados.</td></tr>';
             }
         }
 
-        function renderRanking() {
+        function popularDropdownEtapas(qtd) {
+            selectEtapa.innerHTML = "";
+            for (let i = 1; i <= qtd; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.innerText = `ETAPA ${i}`;
+                selectEtapa.appendChild(option);
+            }
+            selectEtapa.value = qtd;
+            atualizarBotoesNavegacao();
+        }
+
+        function navegarEtapa(direcao) {
+            const atual = parseInt(selectEtapa.value);
+            const nova = atual + direcao;
+            if (nova >= 1 && nova <= totalEtapasReais) {
+                selectEtapa.value = nova;
+                calcularERenderizar(nova);
+            }
+        }
+
+        function atualizarBotoesNavegacao() {
+            const atual = parseInt(selectEtapa.value);
+            btnVoltarEtapa.disabled = atual <= 1;
+            btnAvancarEtapa.disabled = atual >= totalEtapasReais;
+        }
+
+        function calcularERenderizar(etapaSelecionada) {
+            etapaSelecionada = parseInt(etapaSelecionada);
+            atualizarBotoesNavegacao();
+
+            const rankingAtual = gerarRankingNaData(etapaSelecionada);
+            let rankingAnterior = [];
+            let mapaAnterior = {}; 
+
+            if (etapaSelecionada > 1) {
+                rankingAnterior = gerarRankingNaData(etapaSelecionada - 1);
+                rankingAnterior.forEach((jog, idx) => {
+                    mapaAnterior[jog.nome] = idx + 1;
+                });
+            }
+
+            rankingExibido = rankingAtual.map((jog, idx) => {
+                const posAtual = idx + 1;
+                const posAntiga = mapaAnterior[jog.nome];
+                let variacao = 0; 
+                if (etapaSelecionada === 1 || !posAntiga) {
+                    variacao = "NEW";
+                } else {
+                    variacao = posAntiga - posAtual;
+                }
+                return { ...jog, variacao, posReal: posAtual };
+            });
+
+            paginaAtual = 1;
+            renderTabelaHTML();
+        }
+
+        function gerarRankingNaData(etapaLimite) {
+            const lista = [];
+            jogadoresRaw.forEach(j => {
+                const sliceHistorico = j.pontos.slice(0, etapaLimite);
+                if (sliceHistorico.some(p => p !== null)) {
+                    const total = sliceHistorico.reduce((acc, curr) => acc + (curr || 0), 0);
+                    lista.push({ nome: j.nome, total: total });
+                }
+            });
+            lista.sort((a, b) => b.total - a.total);
+            return lista;
+        }
+
+        function renderTabelaHTML() {
             const tbody = document.getElementById('tabela-ranking-body');
             const inicio = (paginaAtual - 1) * jogadoresPorPagina;
             const fim = inicio + jogadoresPorPagina;
-            const listaParaExibir = rankingCompleto.slice(inicio, fim);
+            const listaParaExibir = rankingExibido.slice(inicio, fim);
 
-            tbody.innerHTML = listaParaExibir.map((linha, index) => {
-                const colunas = linha.split(',');
-                
-                // 1. PEGA OS DADOS (Agora lendo a 4ª coluna também)
-                const nome = colunas[1]?.trim() || "---";
-                const pontos = colunas[2]?.trim() || "0";
-                const variacao = colunas[3]?.trim() || "0"; // <--- AQUI ESTÁ O SEGREDO (Coluna D)
+            if (listaParaExibir.length === 0) {
+                 tbody.innerHTML = '<tr><td colspan="3" class="p-10 text-center text-gray-400 text-xs uppercase tracking-widest">Calculando...</td></tr>';
+                 return;
+            }
 
-                // 2. CALCULA A POSIÇÃO REAL
-                const posReal = inicio + index + 1;
-
-                // 3. CORES DO PÓDIO (1º, 2º e 3º lugar)
+            tbody.innerHTML = listaParaExibir.map(jogador => {
                 let corPos = 'text-gray-400';
-                if (posReal === 1) corPos = 'text-yellow-500';
-                if (posReal === 2) corPos = 'text-gray-400 font-bold';
-                if (posReal === 3) corPos = 'text-amber-600';
+                if (jogador.posReal === 1) corPos = 'text-yellow-500';
+                if (jogador.posReal === 2) corPos = 'text-gray-400 font-bold';
+                if (jogador.posReal === 3) corPos = 'text-amber-600';
 
-                // 4. LÓGICA DAS SETINHAS (Variação)
-                let htmlVariacao = '<span class="text-gray-300 text-[10px]">-</span>'; // Padrão (igual)
-
-                if (variacao === 'NEW') {
-                     // Caso seja novo jogador
-                     htmlVariacao = '<span class="text-blue-500 text-[9px] font-black tracking-tighter uppercase bg-blue-50 px-1 rounded border border-blue-100">NEW</span>';
-                } else {
-                    const val = parseInt(variacao);
-                    if (val > 0) {
-                        // Subiu (Verde)
-                        htmlVariacao = `
-                            <div class="flex items-center gap-1 text-green-500 bg-green-50 px-1.5 py-0.5 rounded border border-green-100">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
-                                <span class="text-[10px] font-black">${val}</span>
-                            </div>`;
-                    } else if (val < 0) {
-                        // Desceu (Vermelho)
-                        htmlVariacao = `
-                            <div class="flex items-center gap-1 text-red-500 bg-red-50 px-1.5 py-0.5 rounded border border-red-100">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
-                                <span class="text-[10px] font-black">${Math.abs(val)}</span>
-                            </div>`;
-                    }
+                let htmlVariacao = '<span class="text-gray-300 text-[10px]">=</span>'; 
+                if (jogador.variacao === 'NEW') {
+                      htmlVariacao = '<span class="text-blue-500 text-[9px] font-black tracking-tighter uppercase bg-blue-50 px-1 rounded border border-blue-100">NEW</span>';
+                } else if (jogador.variacao > 0) {
+                     htmlVariacao = `<div class="flex items-center gap-1 text-green-500 bg-green-50 px-1.5 py-0.5 rounded border border-green-100"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg><span class="text-[10px] font-black">${jogador.variacao}</span></div>`;
+                } else if (jogador.variacao < 0) {
+                     htmlVariacao = `<div class="flex items-center gap-1 text-red-500 bg-red-50 px-1.5 py-0.5 rounded border border-red-100"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg><span class="text-[10px] font-black">${Math.abs(jogador.variacao)}</span></div>`;
                 }
 
                 return `
-                    <tr class="hover:bg-gray-50 transition border-b border-gray-50 last:border-0">
-                        <td class="p-6 font-black text-xl ${corPos} italic w-24 text-center">
-                            <div class="flex flex-col items-center gap-2">
-                                <span>${posReal}º</span>
-                                ${htmlVariacao}
-                            </div>
+                    <tr class="hover:bg-gray-50 transition border-b border-gray-50 last:border-0 h-16">
+                        <td class="font-black text-lg md:text-xl ${corPos} italic text-center align-middle">
+                            <div class="flex flex-col items-center justify-center gap-1"><span>${jogador.posReal}º</span>${htmlVariacao}</div>
                         </td>
-                        <td class="p-6 font-bold text-gray-800 uppercase tracking-tight text-left align-middle">
-                            ${nome}
-                        </td>
-                        <td class="p-6 text-right font-black text-[#0a2240] italic align-middle text-lg">
-                            ${pontos} <span class="text-[10px] text-gray-400 font-normal not-italic ml-1">PTS</span>
-                        </td>
+                        <td class="font-bold text-gray-800 uppercase tracking-tight text-left align-middle text-xs md:text-sm pl-2"><div class="truncate w-full pr-2">${jogador.nome}</div></td>
+                        <td class="text-right font-black text-[#0a2240] italic align-middle text-sm md:text-lg pr-4">${jogador.total} <span class="text-[8px] md:text-[10px] text-gray-400 font-normal not-italic">PTS</span></td>
                     </tr>
                 `;
-            }).join('');
+            }).join(''); 
 
-            // ATUALIZA O RODAPÉ DA TABELA
             document.getElementById('info-pagina').innerText = `Página ${paginaAtual}`;
-            document.getElementById('info-posicao').innerText = `Mostrando ${inicio + 1}-${Math.min(fim, rankingCompleto.length)}`;
+            if(rankingExibido.length > 0) {
+                 document.getElementById('info-posicao').innerText = `Mostrando ${inicio + 1}-${Math.min(fim, rankingExibido.length)}`;
+            }
             document.getElementById('btn-prev').disabled = paginaAtual === 1;
-            document.getElementById('btn-next').disabled = fim >= rankingCompleto.length;
+            document.getElementById('btn-next').disabled = fim >= rankingExibido.length;
         }
 
+        selectEtapa.addEventListener('change', (e) => calcularERenderizar(e.target.value));
         function mudarPagina(direcao) {
             paginaAtual += direcao;
-            renderRanking();
+            renderTabelaHTML();
             document.getElementById('ranking').scrollIntoView({ behavior: 'smooth' });
         }
 
-    // LÓGICA DO CALENDÁRIO
-        const etapas = [
-            // ADICIONEI O "status" NAS 3 PRIMEIRAS:
-            { n: '01', data: '06/01/2026', valor: 'R$ 20,00', local: 'Magi Games', status: 'done' },
-            { n: '02', data: '13/01/2026', valor: 'R$ 20,00', local: 'Magi Games', status: 'done' },
-            { n: '03', data: '20/01/2026', valor: 'R$ 20,00', local: 'Magi Games', status: 'next' },
-            
-            // As outras continuam normais (sem status):
+        // --- 2. CALENDÁRIO AUTOMÁTICO ---
+        const dadosEtapas = [
+            { n: '01', data: '06/01/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '02', data: '13/01/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '03', data: '20/01/2026', valor: 'R$ 20,00', local: 'Magi Games' },
             { n: '04', data: '27/01/2026', valor: 'R$ 20,00', local: 'Magi Games' },
             { n: '05', data: '03/02/2026', valor: 'R$ 20,00', local: 'Magi Games' },
             { n: '06', data: '10/02/2026', valor: 'R$ 20,00', local: 'Magi Games' },
@@ -327,33 +423,38 @@
             { n: '09', data: '03/03/2026', valor: 'R$ 20,00', local: 'Magi Games' },
             { n: '10', data: '10/03/2026', valor: 'R$ 20,00', local: 'Magi Games' }
         ];
-
-        let expandido = false;
+        let calExpandido = false;
 
         function renderCalendario() {
             const container = document.getElementById('calendario-container');
-            // Agora mostra 5 itens no início para garantir que a "próxima" apareça se for a 3 ou 4
-            const listaParaExibir = expandido ? etapas : etapas.slice(0, 5); 
+            const listaParaExibir = calExpandido ? dadosEtapas : dadosEtapas.slice(0, 5); 
+            const hoje = new Date();
+            hoje.setHours(0,0,0,0);
+            let proximaEncontrada = false;
 
             container.innerHTML = listaParaExibir.map(e => {
-                // Lógica dos visuais (DONE e NEXT)
-                let visualClasses = 'border-gray-100 hover:border-cpj-red'; // Padrão
+                const partes = e.data.split('/');
+                const dataEtapa = new Date(partes[2], partes[1] - 1, partes[0]);
+                let status = 'future';
+                if (dataEtapa < hoje) status = 'done';
+                else if (dataEtapa >= hoje && !proximaEncontrada) {
+                    status = 'next';
+                    proximaEncontrada = true;
+                }
+                let visualClasses = 'border-gray-100 hover:border-cpj-red';
                 let badge = '';
-
-                if (e.status === 'done') {
-                    visualClasses = 'border-green-100 bg-gray-50 opacity-60'; // Fica mais apagadinho
+                if (status === 'done') {
+                    visualClasses = 'border-green-100 bg-gray-50 opacity-60'; 
                     badge = '<span class="bg-green-100 text-green-700 border border-green-200 px-2 py-1 rounded text-[9px] font-black uppercase tracking-widest">Concluído</span>';
-                } 
-                else if (e.status === 'next') {
-                    visualClasses = 'border-red-600 shadow-lg ring-1 ring-red-100 bg-white transform scale-[1.02]'; // Ganha destaque
+                } else if (status === 'next') {
+                    visualClasses = 'border-red-600 shadow-lg ring-1 ring-red-100 bg-white transform scale-[1.02]';
                     badge = '<span class="bg-red-600 text-white px-3 py-1 rounded text-[9px] font-black uppercase tracking-widest animate-pulse shadow-md">Próxima Etapa</span>';
                 }
-
                 return `
                 <div class="flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border transition-all group ${visualClasses}">
                     <div class="mb-3 md:mb-0 flex flex-col gap-2">
                         <div class="flex items-center gap-3">
-                            <span class="text-[9px] font-black ${e.status === 'next' ? 'text-red-600' : 'text-gray-400'} uppercase tracking-widest">Etapa ${e.n}</span>
+                            <span class="text-[9px] font-black ${status === 'next' ? 'text-red-600' : 'text-gray-400'} uppercase tracking-widest">Etapa ${e.n}</span>
                             ${badge}
                         </div>
                         <h3 class="text-md font-black text-[#0a2240] uppercase italic">Circuito Pauper Joinville</h3>
@@ -366,43 +467,161 @@
                 </div>
             `}).join('');
         }
-
         function toggleCalendario() {
-            expandido = !expandido;
+            calExpandido = !calExpandido;
             renderCalendario();
             const btn = document.getElementById('btn-expandir');
             const seta = document.getElementById('seta-expandir');
-            btn.querySelector('span').innerText = expandido ? 'Mostrar Menos' : 'Ver Calendário Completo';
-            seta.style.transform = expandido ? 'rotate(180deg)' : 'rotate(0deg)';
+            btn.querySelector('span').innerText = calExpandido ? 'Mostrar Menos' : 'Ver Calendário Completo';
+            seta.style.transform = calExpandido ? 'rotate(180deg)' : 'rotate(0deg)';
         }
 
-        // Inicialização
+        // --- 3. HALL DA FAMA (CARROSSEL DINÂMICO) ---
+        // EDITE AQUI OS VENCEDORES
+        const hallDaFamaData = [
+            { etapa: 1, nome: "Gustavo Schwarz", deck: "UB Crab Control", img: "img/ETAPA01.JPG", link: "https://moxfield.com/decks/w9Uy3gzcSkKHqNWUzrCY0w", status: 'done' },
+            { etapa: 2, nome: "Eron Moggio", deck: "BW Blade", img: "img/ETAPA02.JPG", link: "https://moxfield.com/decks/21u9iqGsAke7C-Y1ae2zog", status: 'done' },
+            { etapa: 3, nome: "Eron Moggio", deck: "BW Blade", img: "img/ETAPA03.JPG", link: "https://moxfield.com/decks/21u9iqGsAke7C-Y1ae2zog", status: 'done' },
+            { etapa: 4, nome: "A Definir", deck: "---", img: "", link: "#", status: 'pending' },
+            { etapa: 5, nome: "A Definir", deck: "---", img: "", link: "#", status: 'pending' },
+            { etapa: 6, nome: "A Definir", deck: "---", img: "", link: "#", status: 'pending' },
+            { etapa: 7, nome: "A Definir", deck: "---", img: "", link: "#", status: 'pending' },
+            { etapa: 8, nome: "A Definir", deck: "---", img: "", link: "#", status: 'pending' },
+            { etapa: 9, nome: "A Definir", deck: "---", img: "", link: "#", status: 'pending' },
+            { etapa: 10, nome: "A Definir", deck: "---", img: "", link: "#", status: 'pending' }
+        ];
+
+        let hallIndex = 0; // Começa mostrando do primeiro
+        const hallCount = 3; // Quantos aparecem na tela (Desktop)
+
+        function renderHall() {
+            const container = document.getElementById('hall-container');
+            const btnPrev = document.getElementById('btn-hall-prev');
+            const btnNext = document.getElementById('btn-hall-next');
+            const btnPrevMob = document.getElementById('btn-hall-prev-mobile');
+            const btnNextMob = document.getElementById('btn-hall-next-mobile');
+
+            // Recorta o array para pegar os 3 itens atuais
+            const visibleItems = hallDaFamaData.slice(hallIndex, hallIndex + hallCount);
+
+            container.innerHTML = visibleItems.map(item => {
+                // Lógica de Visual (Done vs Pending)
+                if (item.status === 'done') {
+                    return `
+                    <div class="group relative pt-16 animate-in zoom-in duration-500">
+                        <div class="bg-white rounded-[2rem] border border-gray-100 shadow-xl p-8 pt-16 text-center group-hover:shadow-2xl transition-all duration-300 border-b-8 border-red-600 h-full flex flex-col justify-between">
+                            <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 w-32 h-32 rounded-full border-8 border-white shadow-lg overflow-hidden z-10">
+                                <img src="${item.img}" alt="Campeão" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-black tracking-[0.3em] text-red-600 uppercase block mb-2">Vencedor Etapa #${item.etapa}</span>
+                                <h3 class="text-2xl font-black text-cpj-blue mb-2 leading-tight italic">${item.nome}</h3>
+                                <p class="text-[#0a2240] font-bold text-sm uppercase tracking-widest mb-8 opacity-60 italic">${item.deck}</p>
+                            </div>
+                            <a href="${item.link}" target="_blank" class="inline-block w-full py-5 bg-[#0a2240] text-white rounded-2xl font-black text-xs tracking-widest hover:bg-black transition-all shadow-lg uppercase">View Decklist</a>
+                        </div>
+                    </div>`;
+                } else {
+                    return `
+                    <div class="group relative pt-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+                        <div class="bg-white rounded-[2rem] border border-gray-200 shadow-sm p-8 pt-16 text-center h-full flex flex-col justify-between border-b-8 border-gray-300">
+                            <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 w-32 h-32 rounded-full border-8 border-white shadow-inner bg-gray-100 flex items-center justify-center z-10">
+                                <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-black tracking-[0.3em] text-gray-400 uppercase block mb-2">Etapa #${item.etapa}</span>
+                                <h3 class="text-2xl font-black text-gray-300 mb-2 leading-tight italic">Em Breve</h3>
+                                <p class="text-gray-300 font-bold text-sm uppercase tracking-widest mb-8 opacity-60 italic">---</p>
+                            </div>
+                            <button disabled class="cursor-not-allowed inline-block w-full py-5 bg-gray-100 text-gray-300 rounded-2xl font-black text-xs tracking-widest uppercase">Aguardando</button>
+                        </div>
+                    </div>`;
+                }
+            }).join('');
+
+            // Controle dos Botões (Desabilita se chegou no fim)
+            const isStart = hallIndex === 0;
+            const isEnd = hallIndex + hallCount >= hallDaFamaData.length;
+
+            if(btnPrev) btnPrev.disabled = isStart;
+            if(btnNext) btnNext.disabled = isEnd;
+            if(btnPrevMob) btnPrevMob.disabled = isStart;
+            if(btnNextMob) btnNextMob.disabled = isEnd;
+        }
+
+        function moveHall(direction) {
+            const novoIndex = hallIndex + direction;
+            // Valida Limites
+            if (novoIndex >= 0 && novoIndex + hallCount <= hallDaFamaData.length) {
+                hallIndex = novoIndex;
+                renderHall();
+            }
+        }
+
+        // --- 4. META GAME ---
+        let metaDadosCache = [];
+        let metaExpandido = false;
+        async function carregarMetaGame() {
+            try {
+                const response = await fetch(META_CSV_URL);
+                const data = await response.text();
+                const linhas = data.split('\n').filter(l => l.trim() !== "");
+                let totalDecks = 0;
+                metaDadosCache = linhas.map(linha => {
+                    const colunas = linha.split(',');
+                    const nome = colunas[0]?.trim();
+                    const qtd = parseInt(colunas[1]?.trim() || "0");
+                    if(nome && qtd) {
+                        totalDecks += qtd;
+                        return { nome, qtd };
+                    }
+                    return null;
+                }).filter(i => i !== null);
+                metaDadosCache.forEach(d => d.totalGeral = totalDecks);
+                renderMetaVisual();
+            } catch (error) {
+                console.error("Erro meta:", error);
+                document.getElementById('meta-game-container').innerHTML = '<p class="text-center text-red-500 text-xs">Erro.</p>';
+            }
+        }
+        function renderMetaVisual() {
+            const container = document.getElementById('meta-game-container');
+            const btnContainer = document.getElementById('meta-btn-container');
+            const listaParaExibir = metaExpandido ? metaDadosCache : metaDadosCache.slice(0, 4);
+            container.innerHTML = '';
+            listaParaExibir.forEach(deck => {
+                const porcentagem = ((deck.qtd / deck.totalGeral) * 100).toFixed(1); 
+                container.innerHTML += `<div class="group animate-in fade-in slide-in-from-bottom-4 duration-700"><div class="flex justify-between text-sm font-bold text-[#0a2240] uppercase tracking-wider mb-2"><span>${deck.nome}</span><span>${porcentagem}% <span class="text-[9px] text-gray-400 font-normal">(${deck.qtd})</span></span></div><div class="w-full bg-gray-100 rounded-full h-3 overflow-hidden"><div class="bg-red-600 h-3 rounded-full group-hover:bg-[#0a2240] transition-all duration-1000" style="width: ${porcentagem}%"></div></div></div>`;
+            });
+            if (metaDadosCache.length > 4) {
+                btnContainer.classList.remove('hidden');
+                const btn = document.getElementById('btn-meta-expandir');
+                const seta = document.getElementById('seta-meta');
+                btn.querySelector('span').innerText = metaExpandido ? 'Mostrar Menos' : 'Ver Meta Completo';
+                seta.style.transform = metaExpandido ? 'rotate(180deg)' : 'rotate(0deg)';
+            }
+        }
+        function toggleMetaGame() {
+            metaExpandido = !metaExpandido;
+            renderMetaVisual(); 
+        }
+
+        // --- INICIALIZAÇÃO ---
         carregarRanking();
         renderCalendario();
+        carregarMetaGame();
+        renderHall(); // Inicia o Hall da Fama
 
-        // FUNÇÃO MENU MOBILE
         function toggleMenu() {
             const menu = document.getElementById('mobile-menu-overlay');
-            
             if (menu.classList.contains('hidden')) {
-                // ABRIR
                 menu.classList.remove('hidden');
-                // Pequeno delay para a animação de opacidade funcionar
-                setTimeout(() => {
-                    menu.classList.remove('opacity-0');
-                    menu.classList.add('opacity-100');
-                }, 10);
+                setTimeout(() => { menu.classList.remove('opacity-0'); menu.classList.add('opacity-100'); }, 10);
             } else {
-                // FECHAR
-                menu.classList.remove('opacity-100');
-                menu.classList.add('opacity-0');
-                // Espera a animação terminar para esconder de verdade
-                setTimeout(() => {
-                    menu.classList.add('hidden');
-                }, 300);
+                menu.classList.remove('opacity-100'); menu.classList.add('opacity-0');
+                setTimeout(() => { menu.classList.add('hidden'); }, 300);
             }
         }
     </script>
-    
 </body>
 </html>
