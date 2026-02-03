@@ -174,22 +174,13 @@
         </div>
     </section>
 
-    <section id="campeoes" class="py-24 px-6 max-w-7xl mx-auto border-t border-gray-100 relative">
+    <section id="campeoes" class="py-24 px-6 max-w-[1400px] mx-auto border-t border-gray-100 relative">
         <h2 class="text-4xl font-black text-cpj-blue mb-16 uppercase italic tracking-tighter text-center">🏆 Hall da Fama</h2>
         
-        <div class="relative flex items-center justify-center gap-4 md:gap-8">
-            
-            <button onclick="moveHall(-1)" id="btn-hall-prev" class="hidden md:flex z-10 p-4 bg-white border border-gray-100 rounded-full shadow-lg text-gray-400 hover:text-cpj-red hover:scale-110 transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:scale-100">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path></svg>
-            </button>
+        <div id="hall-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 w-full transition-all duration-500">
+            </div>
 
-            <div id="hall-container" class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl transition-all duration-500">
-                </div>
-
-            <button onclick="moveHall(1)" id="btn-hall-next" class="hidden md:flex z-10 p-4 bg-white border border-gray-100 rounded-full shadow-lg text-gray-400 hover:text-cpj-red hover:scale-110 transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:scale-100">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
-            </button>
-        </div>
+    </section>
         
         <div class="flex md:hidden justify-center gap-6 mt-8">
              <button onclick="moveHall(-1)" id="btn-hall-prev-mobile" class="p-4 bg-white border border-gray-100 rounded-full shadow-lg text-gray-400 hover:text-cpj-red disabled:opacity-30">
@@ -476,13 +467,12 @@
             seta.style.transform = calExpandido ? 'rotate(180deg)' : 'rotate(0deg)';
         }
 
-        // --- 3. HALL DA FAMA (CARROSSEL DINÂMICO) ---
-        // EDITE AQUI OS VENCEDORES
+// --- 3. HALL DA FAMA (GRADE COMPLETA) ---
         const hallDaFamaData = [
             { etapa: 1, nome: "Gustavo Schwarz", deck: "UB Crab Control", img: "img/ETAPA01.JPG", link: "https://moxfield.com/decks/w9Uy3gzcSkKHqNWUzrCY0w", status: 'done' },
             { etapa: 2, nome: "Eron Moggio", deck: "BW Blade", img: "img/ETAPA02.JPG", link: "https://moxfield.com/decks/21u9iqGsAke7C-Y1ae2zog", status: 'done' },
             { etapa: 3, nome: "Eron Moggio", deck: "BW Blade", img: "img/ETAPA03.JPG", link: "https://moxfield.com/decks/21u9iqGsAke7C-Y1ae2zog", status: 'done' },
-            { etapa: 4, nome: "A Definir", deck: "---", img: "", link: "#", status: 'pending' },
+            { etapa: 4, nome: "Guilherme Watzko", deck: "Mono U Faeries", img: "img/ETAPA04.JPG", link: "https://moxfield.com/decks/9jV1Fkom20iPtPOreU1_9Q", status: 'done' },
             { etapa: 5, nome: "A Definir", deck: "---", img: "", link: "#", status: 'pending' },
             { etapa: 6, nome: "A Definir", deck: "---", img: "", link: "#", status: 'pending' },
             { etapa: 7, nome: "A Definir", deck: "---", img: "", link: "#", status: 'pending' },
@@ -491,72 +481,47 @@
             { etapa: 10, nome: "A Definir", deck: "---", img: "", link: "#", status: 'pending' }
         ];
 
-        let hallIndex = 0; // Começa mostrando do primeiro
-        const hallCount = 3; // Quantos aparecem na tela (Desktop)
-
         function renderHall() {
             const container = document.getElementById('hall-container');
-            const btnPrev = document.getElementById('btn-hall-prev');
-            const btnNext = document.getElementById('btn-hall-next');
-            const btnPrevMob = document.getElementById('btn-hall-prev-mobile');
-            const btnNextMob = document.getElementById('btn-hall-next-mobile');
 
-            // Recorta o array para pegar os 3 itens atuais
-            const visibleItems = hallDaFamaData.slice(hallIndex, hallIndex + hallCount);
-
-            container.innerHTML = visibleItems.map(item => {
+            // Renderiza TODOS os itens da lista, sem fatiar (.slice)
+            container.innerHTML = hallDaFamaData.map(item => {
                 // Lógica de Visual (Done vs Pending)
                 if (item.status === 'done') {
                     return `
-                    <div class="group relative pt-16 animate-in zoom-in duration-500">
-                        <div class="bg-white rounded-[2rem] border border-gray-100 shadow-xl p-8 pt-16 text-center group-hover:shadow-2xl transition-all duration-300 border-b-8 border-red-600 h-full flex flex-col justify-between">
-                            <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 w-32 h-32 rounded-full border-8 border-white shadow-lg overflow-hidden z-10">
+                    <div class="group relative pt-12 animate-in zoom-in duration-500 h-full">
+                        <div class="bg-white rounded-[1.5rem] border border-gray-100 shadow-lg p-6 pt-12 text-center group-hover:shadow-xl transition-all duration-300 border-b-4 border-red-600 h-full flex flex-col justify-between">
+                            <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 w-24 h-24 rounded-full border-4 border-white shadow-md overflow-hidden z-10">
                                 <img src="${item.img}" alt="Campeão" class="w-full h-full object-cover">
                             </div>
                             <div>
-                                <span class="text-[10px] font-black tracking-[0.3em] text-red-600 uppercase block mb-2">Vencedor Etapa #${item.etapa}</span>
-                                <h3 class="text-2xl font-black text-cpj-blue mb-2 leading-tight italic">${item.nome}</h3>
-                                <p class="text-[#0a2240] font-bold text-sm uppercase tracking-widest mb-8 opacity-60 italic">${item.deck}</p>
+                                <span class="text-[9px] font-black tracking-[0.2em] text-red-600 uppercase block mb-1">Etapa #${item.etapa}</span>
+                                <h3 class="text-lg font-black text-cpj-blue mb-1 leading-tight italic truncate">${item.nome}</h3>
+                                <p class="text-[#0a2240] font-bold text-xs uppercase tracking-widest mb-4 opacity-60 italic truncate">${item.deck}</p>
                             </div>
-                            <a href="${item.link}" target="_blank" class="inline-block w-full py-5 bg-[#0a2240] text-white rounded-2xl font-black text-xs tracking-widest hover:bg-black transition-all shadow-lg uppercase">View Decklist</a>
+                            <a href="${item.link}" target="_blank" class="inline-block w-full py-3 bg-[#0a2240] text-white rounded-xl font-black text-[10px] tracking-widest hover:bg-black transition-all shadow uppercase">Decklist</a>
                         </div>
                     </div>`;
                 } else {
                     return `
-                    <div class="group relative pt-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-                        <div class="bg-white rounded-[2rem] border border-gray-200 shadow-sm p-8 pt-16 text-center h-full flex flex-col justify-between border-b-8 border-gray-300">
-                            <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 w-32 h-32 rounded-full border-8 border-white shadow-inner bg-gray-100 flex items-center justify-center z-10">
-                                <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div class="group relative pt-12 opacity-50 grayscale hover:grayscale-0 transition-all duration-500 h-full">
+                        <div class="bg-white rounded-[1.5rem] border border-gray-200 shadow-sm p-6 pt-12 text-center h-full flex flex-col justify-between border-b-4 border-gray-300">
+                            <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 w-24 h-24 rounded-full border-4 border-white shadow-inner bg-gray-100 flex items-center justify-center z-10">
+                                <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             </div>
                             <div>
-                                <span class="text-[10px] font-black tracking-[0.3em] text-gray-400 uppercase block mb-2">Etapa #${item.etapa}</span>
-                                <h3 class="text-2xl font-black text-gray-300 mb-2 leading-tight italic">Em Breve</h3>
-                                <p class="text-gray-300 font-bold text-sm uppercase tracking-widest mb-8 opacity-60 italic">---</p>
+                                <span class="text-[9px] font-black tracking-[0.2em] text-gray-400 uppercase block mb-1">Etapa #${item.etapa}</span>
+                                <h3 class="text-lg font-black text-gray-300 mb-1 leading-tight italic">Em Breve</h3>
+                                <p class="text-gray-300 font-bold text-xs uppercase tracking-widest mb-4 opacity-60 italic">---</p>
                             </div>
-                            <button disabled class="cursor-not-allowed inline-block w-full py-5 bg-gray-100 text-gray-300 rounded-2xl font-black text-xs tracking-widest uppercase">Aguardando</button>
+                            <button disabled class="cursor-not-allowed inline-block w-full py-3 bg-gray-100 text-gray-300 rounded-xl font-black text-[10px] tracking-widest uppercase">---</button>
                         </div>
                     </div>`;
                 }
             }).join('');
-
-            // Controle dos Botões (Desabilita se chegou no fim)
-            const isStart = hallIndex === 0;
-            const isEnd = hallIndex + hallCount >= hallDaFamaData.length;
-
-            if(btnPrev) btnPrev.disabled = isStart;
-            if(btnNext) btnNext.disabled = isEnd;
-            if(btnPrevMob) btnPrevMob.disabled = isStart;
-            if(btnNextMob) btnNextMob.disabled = isEnd;
         }
 
-        function moveHall(direction) {
-            const novoIndex = hallIndex + direction;
-            // Valida Limites
-            if (novoIndex >= 0 && novoIndex + hallCount <= hallDaFamaData.length) {
-                hallIndex = novoIndex;
-                renderHall();
-            }
-        }
+        // Removemos a função moveHall pois não há mais navegação
 
         // --- 4. META GAME ---
         let metaDadosCache = [];
