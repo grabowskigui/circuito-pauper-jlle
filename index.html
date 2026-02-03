@@ -12,6 +12,7 @@
         .text-cpj-blue { color: var(--cpj-blue); }
         .bg-cpj-blue { background-color: var(--cpj-blue); }
         .border-cpj-red { border-color: var(--cpj-red); }
+        /* Esconde barra de rolagem mas permite scroll horizontal se necessário */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -19,8 +20,11 @@
 <body>
 
     <nav class="bg-white/90 backdrop-blur-md border-b border-gray-100 py-4 px-6 md:py-6 md:px-12 flex justify-between items-center sticky top-0 z-50">
+        
         <button onclick="toggleMenu()" class="md:hidden p-2 text-[#0a2240] hover:bg-gray-100 rounded-lg transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
         </button>
 
         <div class="hidden md:flex gap-12 font-bold text-[11px] uppercase tracking-[0.2em] text-gray-400 absolute left-1/2 transform -translate-x-1/2">
@@ -173,8 +177,16 @@
     <section id="campeoes" class="py-24 px-6 max-w-[1400px] mx-auto border-t border-gray-100 relative">
         <h2 class="text-4xl font-black text-cpj-blue mb-16 uppercase italic tracking-tighter text-center">🏆 Hall da Fama</h2>
         
-        <div id="hall-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 w-full transition-all duration-500">
+        <div id="hall-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 w-full transition-all duration-500">
             </div>
+
+        <div id="hall-btn-container" class="text-center mt-12 hidden">
+            <button onclick="toggleHall()" class="inline-flex items-center gap-2 border-2 border-gray-100 text-gray-400 font-black text-xs px-8 py-4 rounded-full hover:border-cpj-red hover:text-cpj-red transition-all uppercase tracking-widest">
+                <span id="btn-hall-text">Mostrar Mais</span>
+                <svg id="btn-hall-icon" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+        </div>
+
     </section>
 
     <footer class="bg-[#0a2240] text-white py-10 px-6 border-t border-white/5">
@@ -451,55 +463,93 @@
             seta.style.transform = calExpandido ? 'rotate(180deg)' : 'rotate(0deg)';
         }
 
-        // --- 3. HALL DA FAMA (GRADE COMPLETA) ---
+        // --- 3. HALL DA FAMA (CORRIGIDO E COM BOTÃO "MOSTRAR MAIS") ---
         const hallDaFamaData = [
             { etapa: 1, nome: "Gustavo Schwarz", deck: "UB Crab Control", img: "img/ETAPA01.JPG", link: "https://moxfield.com/decks/w9Uy3gzcSkKHqNWUzrCY0w", status: 'done' },
             { etapa: 2, nome: "Eron Moggio", deck: "BW Blade", img: "img/ETAPA02.JPG", link: "https://moxfield.com/decks/21u9iqGsAke7C-Y1ae2zog", status: 'done' },
             { etapa: 3, nome: "Eron Moggio", deck: "BW Blade", img: "img/ETAPA03.JPG", link: "https://moxfield.com/decks/21u9iqGsAke7C-Y1ae2zog", status: 'done' },
             { etapa: 4, nome: "Guilherme Watzko", deck: "Mono U Faeries", img: "img/etapa04.jpg.jpg", link: "https://moxfield.com/decks/9jV1Fkom20iPtPOreU1_9Q", status: 'done' },
-            { etapa: 5, nome: "A Definir", deck: "---", img: "", link: "#", status: 'pending' },
-            { etapa: 6, nome: "A Definir", deck: "---", img: "", link: "#", status: 'pending' },
-            { etapa: 7, nome: "A Definir", deck: "---", img: "", link: "#", status: 'pending' },
-            { etapa: 8, nome: "A Definir", deck: "---", img: "", link: "#", status: 'pending' },
-            { etapa: 9, nome: "A Definir", deck: "---", img: "", link: "#", status: 'pending' },
-            { etapa: 10, nome: "A Definir", deck: "---", img: "", link: "#", status: 'pending' }
+            { etapa: 5, nome: "A Definir", data: "03 FEV", img: "", link: "#", status: 'pending' },
+            { etapa: 6, nome: "A Definir", data: "10 FEV", img: "", link: "#", status: 'pending' },
+            { etapa: 7, nome: "A Definir", data: "17 FEV", img: "", link: "#", status: 'pending' },
+            { etapa: 8, nome: "A Definir", data: "24 FEV", img: "", link: "#", status: 'pending' },
+            { etapa: 9, nome: "A Definir", data: "03 MAR", img: "", link: "#", status: 'pending' },
+            { etapa: 10, nome: "A Definir", data: "10 MAR", img: "", link: "#", status: 'pending' }
         ];
+
+        let mostrarTodosHall = false; // Estado para controlar se mostra tudo ou só 5
 
         function renderHall() {
             const container = document.getElementById('hall-container');
-            container.innerHTML = hallDaFamaData.map(item => {
+            const btnContainer = document.getElementById('hall-btn-container');
+            const btnText = document.getElementById('btn-hall-text');
+            const btnIcon = document.getElementById('btn-hall-icon');
+
+            // Decide se mostra todos ou apenas os 5 primeiros
+            const listaParaExibir = mostrarTodosHall ? hallDaFamaData : hallDaFamaData.slice(0, 5);
+
+            container.innerHTML = listaParaExibir.map(item => {
                 if (item.status === 'done') {
+                    // CARD CAMPEÃO (COM IMAGEM CORRIGIDA)
                     return `
-                    <div class="group relative pt-12 animate-in zoom-in duration-500 h-full">
-                        <div class="bg-white rounded-[1.5rem] border border-gray-100 shadow-lg p-6 pt-12 text-center group-hover:shadow-xl transition-all duration-300 border-b-4 border-red-600 h-full flex flex-col justify-between">
-                            <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 w-24 h-24 rounded-full border-4 border-white shadow-md overflow-hidden z-10">
-                                <img src="${item.img}" alt="Campeão" class="w-full h-full object-cover">
+                    <div class="group relative pt-16 animate-in zoom-in duration-500 h-full">
+                        <div class="bg-white rounded-[1.5rem] border border-gray-100 shadow-lg p-6 pt-16 text-center group-hover:shadow-xl transition-all duration-300 border-b-4 border-red-600 h-full flex flex-col justify-between relative overflow-visible">
+                            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-500 to-red-700 rounded-t-[1.5rem]"></div>
+                            
+                            <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 w-28 h-28 rounded-full border-4 border-white shadow-md overflow-hidden z-10 bg-white">
+                                <img src="${item.img}" alt="Campeão" class="w-full h-full object-cover object-center transform transition-transform group-hover:scale-110">
                             </div>
-                            <div>
-                                <span class="text-[9px] font-black tracking-[0.2em] text-red-600 uppercase block mb-1">Etapa #${item.etapa}</span>
+                            <div class="mt-6">
+                                <span class="text-[9px] font-black tracking-[0.2em] text-red-600 uppercase block mb-2 bg-red-50 py-1 px-2 rounded-full inline-block">Etapa #${item.etapa}</span>
                                 <h3 class="text-lg font-black text-cpj-blue mb-1 leading-tight italic truncate">${item.nome}</h3>
                                 <p class="text-[#0a2240] font-bold text-xs uppercase tracking-widest mb-4 opacity-60 italic truncate">${item.deck}</p>
                             </div>
-                            <a href="${item.link}" target="_blank" class="inline-block w-full py-3 bg-[#0a2240] text-white rounded-xl font-black text-[10px] tracking-widest hover:bg-black transition-all shadow uppercase">Decklist</a>
+                            <a href="${item.link}" target="_blank" class="inline-flex items-center justify-center gap-2 w-full py-3 bg-[#0a2240] text-white rounded-xl font-black text-[10px] tracking-widest hover:bg-black transition-all shadow uppercase group-hover:translate-y-[-2px]">
+                                <span>Ver Deck</span>
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                            </a>
                         </div>
                     </div>`;
                 } else {
+                    // CARD "EM BREVE" (COM ÍCONE CORRIGIDO)
                     return `
-                    <div class="group relative pt-12 opacity-50 grayscale hover:grayscale-0 transition-all duration-500 h-full">
-                        <div class="bg-white rounded-[1.5rem] border border-gray-200 shadow-sm p-6 pt-12 text-center h-full flex flex-col justify-between border-b-4 border-gray-300">
-                            <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 w-24 h-24 rounded-full border-4 border-white shadow-inner bg-gray-100 flex items-center justify-center z-10">
-                                <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div class="group relative pt-16 h-full">
+                        <div class="bg-gray-50 rounded-[1.5rem] border-2 border-dashed border-gray-300 p-6 pt-16 text-center h-full flex flex-col justify-between hover:border-gray-400 hover:bg-gray-100 transition-all duration-300 relative overflow-visible">
+                            
+                            <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 w-28 h-28 rounded-full border-4 border-white shadow-sm bg-gray-200 flex items-center justify-center z-10 group-hover:scale-105 transition-transform">
+                                <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                </svg>
                             </div>
-                            <div>
-                                <span class="text-[9px] font-black tracking-[0.2em] text-gray-400 uppercase block mb-1">Etapa #${item.etapa}</span>
-                                <h3 class="text-lg font-black text-gray-300 mb-1 leading-tight italic">Em Breve</h3>
-                                <p class="text-gray-300 font-bold text-xs uppercase tracking-widest mb-4 opacity-60 italic">---</p>
+
+                            <div class="mt-6 opacity-70">
+                                <span class="text-[9px] font-black tracking-[0.2em] text-gray-400 uppercase block mb-2">Etapa #${item.etapa}</span>
+                                <h3 class="text-xl font-black text-gray-300 mb-1 leading-tight italic uppercase">Disputa</h3>
+                                <p class="text-gray-400 font-bold text-xs uppercase tracking-widest mb-0 opacity-60">Em ${item.data || 'Breve'}</p>
                             </div>
-                            <button disabled class="cursor-not-allowed inline-block w-full py-3 bg-gray-100 text-gray-300 rounded-xl font-black text-[10px] tracking-widest uppercase">---</button>
+
+                            <div class="w-full py-3 bg-gray-200 text-gray-400 rounded-xl font-bold text-[10px] tracking-widest uppercase cursor-default">
+                                Bloqueado
+                            </div>
                         </div>
                     </div>`;
                 }
             }).join('');
+
+            // Controla a visibilidade e o texto do botão "Mostrar Mais"
+            if (hallDaFamaData.length > 5) {
+                btnContainer.classList.remove('hidden');
+                btnText.innerText = mostrarTodosHall ? 'Mostrar Menos' : 'Mostrar Mais';
+                btnIcon.style.transform = mostrarTodosHall ? 'rotate(180deg)' : 'rotate(0deg)';
+            } else {
+                btnContainer.classList.add('hidden');
+            }
+        }
+
+        // Função chamada ao clicar no botão "Mostrar Mais"
+        function toggleHall() {
+            mostrarTodosHall = !mostrarTodosHall;
+            renderHall();
         }
 
         // --- 4. META GAME ---
