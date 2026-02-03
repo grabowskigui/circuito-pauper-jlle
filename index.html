@@ -12,7 +12,6 @@
         .text-cpj-blue { color: var(--cpj-blue); }
         .bg-cpj-blue { background-color: var(--cpj-blue); }
         .border-cpj-red { border-color: var(--cpj-red); }
-        /* Esconde barra de rolagem mas permite scroll horizontal se necessário */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -20,11 +19,8 @@
 <body>
 
     <nav class="bg-white/90 backdrop-blur-md border-b border-gray-100 py-4 px-6 md:py-6 md:px-12 flex justify-between items-center sticky top-0 z-50">
-        
         <button onclick="toggleMenu()" class="md:hidden p-2 text-[#0a2240] hover:bg-gray-100 rounded-lg transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
         </button>
 
         <div class="hidden md:flex gap-12 font-bold text-[11px] uppercase tracking-[0.2em] text-gray-400 absolute left-1/2 transform -translate-x-1/2">
@@ -179,18 +175,6 @@
         
         <div id="hall-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 w-full transition-all duration-500">
             </div>
-
-    </section>
-        
-        <div class="flex md:hidden justify-center gap-6 mt-8">
-             <button onclick="moveHall(-1)" id="btn-hall-prev-mobile" class="p-4 bg-white border border-gray-100 rounded-full shadow-lg text-gray-400 hover:text-cpj-red disabled:opacity-30">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path></svg>
-            </button>
-            <button onclick="moveHall(1)" id="btn-hall-next-mobile" class="p-4 bg-white border border-gray-100 rounded-full shadow-lg text-gray-400 hover:text-cpj-red disabled:opacity-30">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
-            </button>
-        </div>
-
     </section>
 
     <footer class="bg-[#0a2240] text-white py-10 px-6 border-t border-white/5">
@@ -467,7 +451,7 @@
             seta.style.transform = calExpandido ? 'rotate(180deg)' : 'rotate(0deg)';
         }
 
-// --- 3. HALL DA FAMA (GRADE COMPLETA) ---
+        // --- 3. HALL DA FAMA (GRADE COMPLETA) ---
         const hallDaFamaData = [
             { etapa: 1, nome: "Gustavo Schwarz", deck: "UB Crab Control", img: "img/ETAPA01.JPG", link: "https://moxfield.com/decks/w9Uy3gzcSkKHqNWUzrCY0w", status: 'done' },
             { etapa: 2, nome: "Eron Moggio", deck: "BW Blade", img: "img/ETAPA02.JPG", link: "https://moxfield.com/decks/21u9iqGsAke7C-Y1ae2zog", status: 'done' },
@@ -483,10 +467,7 @@
 
         function renderHall() {
             const container = document.getElementById('hall-container');
-
-            // Renderiza TODOS os itens da lista, sem fatiar (.slice)
             container.innerHTML = hallDaFamaData.map(item => {
-                // Lógica de Visual (Done vs Pending)
                 if (item.status === 'done') {
                     return `
                     <div class="group relative pt-12 animate-in zoom-in duration-500 h-full">
@@ -520,8 +501,6 @@
                 }
             }).join('');
         }
-
-        // Removemos a função moveHall pois não há mais navegação
 
         // --- 4. META GAME ---
         let metaDadosCache = [];
