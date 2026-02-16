@@ -405,7 +405,7 @@
             { n: '04', data: '27/01/2026', valor: 'R$ 20,00', local: 'Magi Games' },
             { n: '05', data: '03/02/2026', valor: 'R$ 20,00', local: 'Magi Games' },
             { n: '06', data: '10/02/2026', valor: 'R$ 20,00', local: 'Magi Games' },
-            { n: '07', data: '17/02/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '07', data: '18/02/2026', valor: 'R$ 20,00', local: 'Magi Games' },
             { n: '08', data: '24/02/2026', valor: 'R$ 20,00', local: 'Magi Games' },
             { n: '09', data: '03/03/2026', valor: 'R$ 20,00', local: 'Magi Games' },
             { n: '10', data: '10/03/2026', valor: 'R$ 20,00', local: 'Magi Games' }
@@ -469,9 +469,9 @@
             { etapa: 2, nome: "Eron Moggio", deck: "BW Blade", img: "img/ETAPA02.JPG", link: "https://moxfield.com/decks/21u9iqGsAke7C-Y1ae2zog", status: 'done' },
             { etapa: 3, nome: "Eron Moggio", deck: "BW Blade", img: "img/ETAPA03.JPG", link: "https://moxfield.com/decks/21u9iqGsAke7C-Y1ae2zog", status: 'done' },
             { etapa: 4, nome: "Guilherme Watzko", deck: "Mono U Faeries", img: "img/etapa04new.jpg.jpg", link: "https://moxfield.com/decks/9jV1Fkom20iPtPOreU1_9Q", status: 'done' },
-            { etapa: 5, nome: "A Definir", data: "03 FEV", img: "", link: "#", status: 'pending' },
-            { etapa: 6, nome: "A Definir", data: "10 FEV", img: "", link: "#", status: 'pending' },
-            { etapa: 7, nome: "A Definir", data: "17 FEV", img: "", link: "#", status: 'pending' },
+            { etapa: 5, nome: "William Kock", deck: "Jund Wildfire", img: "img/ETAPA05.JPG", link: "https://moxfield.com/decks/c252cPSvKEWPNHojEZMe1g", status: 'done' },
+            { etapa: 6, nome: "Raphael Günther", deck: "Mono U Terror", img: "img/ETAPA06.JPG", link: "https://moxfield.com/decks/6xUPqc0bIUmlgcZdy6JdYw", status: 'done' },
+            { etapa: 7, nome: "A Definir", data: "18 FEV", img: "", link: "#", status: 'pending' },
             { etapa: 8, nome: "A Definir", data: "24 FEV", img: "", link: "#", status: 'pending' },
             { etapa: 9, nome: "A Definir", data: "03 MAR", img: "", link: "#", status: 'pending' },
             { etapa: 10, nome: "A Definir", data: "10 MAR", img: "", link: "#", status: 'pending' }
@@ -486,7 +486,7 @@ function renderHall() {
             const btnIcon = document.getElementById('btn-hall-icon');
 
             // Decide se mostra todos ou apenas os 5 primeiros
-            const listaParaExibir = mostrarTodosHall ? hallDaFamaData : hallDaFamaData.slice(0, 5);
+            const listaParaExibir = mostrarTodosHall ? hallDaFamaData : hallDaFamaData.slice(0, 10);
 
             container.innerHTML = listaParaExibir.map(item => {
                 if (item.status === 'done') {
