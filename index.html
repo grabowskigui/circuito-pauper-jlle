@@ -8,13 +8,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { --cpj-blue: #0a2240; --cpj-red: #e31d1a; }
-        body { background-color: #ffffff; font-family: 'Inter', sans-serif; color: #1a1a1a; scroll-behavior: smooth; }
+        body { background-color: #ffffff; font-family: 'Inter', sans-serif; color: #1a1a1a; scroll-behavior: smooth; overflow-x: hidden; }
         .text-cpj-blue { color: var(--cpj-blue); }
         .bg-cpj-blue { background-color: var(--cpj-blue); }
         .border-cpj-red { border-color: var(--cpj-red); }
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        #backToTop { opacity: 0; visibility: hidden; transition: all 0.3s; }
+        #backToTop.show { opacity: 1; visibility: visible; }
         /* Esconde barra de rolagem mas permite scroll horizontal se necessário */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f8fafc; }
+        ::-webkit-scrollbar-thumb { background: #0a2240; border-radius: 10px; border: 2px solid #f8fafc; }
+        ::-webkit-scrollbar-thumb:hover { background: #e31d1a; }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-150%); }
+            50% { transform: translateX(150%); }
+            100% { transform: translateX(150%); }
+        }
     </style>
 </head>
 <body>
@@ -72,17 +87,27 @@
     </div>
 
     <header id="home" class="pt-8 pb-16 px-6 text-center max-w-7xl mx-auto">
+
+        <div class="flex justify-center gap-2 mb-8 animate-in fade-in slide-in-from-top-4 duration-1000">
+        <button onclick="mudarSeason(1)" id="btn-season-1" class="px-6 py-2 rounded-full font-black text-[10px] tracking-[0.2em] uppercase transition-all border-2 border-gray-100 text-gray-400 hover:border-cpj-red hover:text-cpj-red">
+            Season 01
+        </button>
+        <button onclick="mudarSeason(2)" id="btn-season-2" class="px-6 py-2 rounded-full font-black text-[10px] tracking-[0.2em] uppercase transition-all border-2 border-cpj-blue bg-cpj-blue text-white shadow-lg">
+            Season 02
+        </button>
+    </div>
+
         <div class="mb-4">
-            <img src="img/logo-cpj.png" alt="Logo CPJ" class="w-64 md:w-[380px] mx-auto drop-shadow-2xl animate-in zoom-in duration-700">
+            <img src="img/logo-cpj.png" alt="Logo CPJ" class="w-48 md:w-[380px] mx-auto drop-shadow-2xl animate-in zoom-in duration-700">
         </div>
-        <div class="overflow-visible pb-2"> 
-            <h1 class="text-5xl md:text-8xl font-black text-[#0a2240] tracking-tighter uppercase italic leading-[0.9] flex flex-col items-center">
+        <div class="overflow-visible pb-6 px-4"> 
+            <h1 class="text-4xl sm:text-6xl md:text-8xl font-black text-[#0a2240] tracking-tighter uppercase italic leading-[0.9] flex flex-col items-center overflow-visible">
                 <span class="block">CIRCUITO PAUPER</span>
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800 pr-4 py-1">JOINVILLE</span>
             </h1>
         </div>
         <p class="text-gray-400 text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed mt-4">
-            Onde os comuns se tornam lendas. Temporada 2026.
+            Onde os comuns se tornam lendas.
         </p>
     </header>
 
@@ -90,6 +115,11 @@
         <div class="max-w-4xl mx-auto text-center">
             <h2 class="text-4xl font-black uppercase italic tracking-tighter text-cpj-blue mb-4">Ranking Geral</h2>
             
+            <!-- Barra de Busca -->
+            <div class="max-w-md mx-auto mb-6 px-4">
+                <input type="text" id="busca-jogador" placeholder="BUSCAR JOGADOR..." class="w-full bg-white border-2 border-gray-100 px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest focus:outline-none focus:border-cpj-red transition-all shadow-sm" oninput="filtrarRanking()">
+            </div>
+
             <div class="flex justify-center items-center gap-4 mb-8">
                 <button onclick="navegarEtapa(-1)" id="btn-voltar-etapa" class="p-3 bg-white border-2 border-gray-100 rounded-full text-gray-400 hover:border-cpj-red hover:text-cpj-red transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path></svg>
@@ -113,7 +143,7 @@
                     <tr class="text-left text-[10px] uppercase tracking-widest text-gray-400 border-b">
                         <th class="w-[15%] py-3 text-center">Pos</th>
                         <th class="w-[60%] py-3 pl-2">Jogador</th>
-                        <th class="w-[25%] py-3 text-right pr-4">Pontos</th>
+                        <th class="w-[20%] py-3 text-right pr-4">Pontos</th>
                     </tr>
                 </thead>
                 <tbody id="tabela-ranking-body" class="divide-y divide-gray-50"></tbody>
@@ -137,7 +167,7 @@
 
     <section class="py-20 bg-white px-6 border-t border-gray-100">
         <div class="max-w-4xl mx-auto">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+            <div class="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 gap-6 text-center md:text-left">
                 <div>
                     <h2 class="text-4xl font-black text-[#0a2240] uppercase italic tracking-tighter">Meta Game</h2>
                     <p class="text-gray-400 font-bold uppercase text-[10px] tracking-[0.3em] mt-2">O que está dominando o field</p>
@@ -177,10 +207,10 @@
     <section id="campeoes" class="py-24 px-6 max-w-[1400px] mx-auto border-t border-gray-100 relative">
         <h2 class="text-4xl font-black text-cpj-blue mb-16 uppercase italic tracking-tighter text-center">🏆 Hall da Fama</h2>
         
-        <div id="hall-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 w-full transition-all duration-500">
+        <div id="hall-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-x-8 gap-y-16 w-full transition-all duration-500">
             </div>
 
-        <div id="hall-btn-container" class="text-center mt-12 hidden">
+        <div id="hall-btn-container" class="text-center mt-24 hidden">
             <button onclick="toggleHall()" class="inline-flex items-center gap-2 border-2 border-gray-100 text-gray-400 font-black text-xs px-8 py-4 rounded-full hover:border-cpj-red hover:text-cpj-red transition-all uppercase tracking-widest">
                 <span id="btn-hall-text">Mostrar Mais</span>
                 <svg id="btn-hall-icon" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
@@ -220,18 +250,137 @@
         </div>
     </footer>
 
-    <script>
-        // --- CONFIGURAÇÕES ---
-        const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSs3dG3a3b_rjQlUwFZL3G48wOoTv5OSnnRtNsan7sk56QWe4Lf02uQ8X-ltOoD2kOczcmv6K_387gs/pub?output=csv';
-        const META_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ1-fHtMSqio6beIEqEiTB9LwyyqMyJ2OV1MbvNipdXPPEJlvsIF45EEhv6mNhF5caAAN73aWSZ-Pua/pub?gid=1925365919&single=true&output=csv';
+    <!-- Botão Voltar ao Topo -->
+    <button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-6 right-6 z-[100] p-4 bg-cpj-blue text-white rounded-full shadow-2xl hover:bg-red-600 transition-all transform hover:scale-110">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+    </button>
 
-        // --- VARIÁVEIS GLOBAIS ---
-        let jogadoresRaw = []; 
-        let totalEtapasReais = 0;   
-        let rankingExibido = []; 
-        let paginaAtual = 1;
-        const jogadoresPorPagina = 8;
-        
+    <script>
+
+const CONFIG_SEASONS = {
+    1: {
+        rankingUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSs3dG3a3b_rjQlUwFZL3G48wOoTv5OSnnRtNsan7sk56QWe4Lf02uQ8X-ltOoD2kOczcmv6K_387gs/pub?output=csv',
+        metaUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ1-fHtMSqio6beIEqEiTB9LwyyqMyJ2OV1MbvNipdXPPEJlvsIF45EEhv6mNhF5caAAN73aWSZ-Pua/pub?gid=1925365919&single=true&output=csv',
+        calendario: [
+            { n: '01', data: '06/01/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '02', data: '13/01/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '03', data: '20/01/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '04', data: '27/01/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '05', data: '03/02/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '06', data: '10/02/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '07', data: '18/02/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '08', data: '24/02/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '09', data: '03/03/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '10', data: '10/03/2026', valor: 'R$ 20,00', local: 'Magi Games' }
+        ],
+        hall: [
+            { etapa: 1, nome: "Gustavo Schwarz", deck: "UB Crab Control", img: "img/ETAPA01.JPG", link: "https://moxfield.com/decks/w9Uy3gzcSkKHqNWUzrCY0w", status: 'done' },
+            { etapa: 2, nome: "Eron Moggio", deck: "BW Blade", img: "img/ETAPA02.JPG", link: "https://moxfield.com/decks/21u9iqGsAke7C-Y1ae2zog", status: 'done' },
+            { etapa: 3, nome: "Eron Moggio", deck: "BW Blade", img: "img/ETAPA03.JPG", link: "https://moxfield.com/decks/21u9iqGsAke7C-Y1ae2zog", status: 'done' },
+            { etapa: 4, nome: "Guilherme Watzko", deck: "Mono U Faeries", img: "img/etapa04new.jpg.jpg", link: "https://moxfield.com/decks/9jV1Fkom20iPtPOreU1_9Q", status: 'done' },
+            { etapa: 5, nome: "William Kock", deck: "Jund Wildfire", img: "img/etapa05new.jpg.jpg", link: "https://moxfield.com/decks/c252cPSvKEWPNHojEZMe1g", status: 'done' },
+            { etapa: 6, nome: "Raphael Günther", deck: "Mono U Terror", img: "img/etapa06new.jpg.jpg", link: "https://moxfield.com/decks/6xUPqc0bIUmlgcZdy6JdYw", status: 'done' },
+            { etapa: 7, nome: "Eron Moggio", deck: "Caw Gates", img: "img/ETAPA03.JPG", link: "https://moxfield.com/decks/3Yv_LhtJrUqo-C2ivwN05A", status: 'done' },
+            { etapa: 8, nome: "Guilherme Watzko", deck: "Mono U Faeries", img: "img/etapa04new.jpg.jpg", link: "https://moxfield.com/decks/9jV1Fkom20iPtPOreU1_9Q", status: 'done' },
+            { etapa: 9, nome: "Guilherme Grabowski", deck: "BG Food", img: "img/etapa09new.jpg", link: "https://moxfield.com/decks/RAQNqyZy1Equx1yZsFvd9Q", status: 'done' },
+            { etapa: 10, nome: "Eron Moggio", deck: "Rakdos Madness", img: "img/ETAPA02.JPG", link: "https://moxfield.com/decks/GZ0wIpCx2kWqHHXr214B-w", status: 'done' },
+        ]
+    },
+    2: {
+        rankingUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vST2PrqbJ5pxlWRkwTeB20i3aCJ4Z0L-I7eWGhzc9h1HnmcWz--rqUvR1hzdl2UHhgQEUunjHU-EWvw/pub?output=csv',
+        metaUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTB6WKAHcx1j25RZR45-p_TROXVFWQBlyrxCITTwFAufoXCetQy883uGGt2BU9S_sfBEf2WXJXpNe2d/pub?output=csv',
+        calendario: [
+            { n: '01', data: '31/03/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '02', data: '07/04/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '03', data: '14/04/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '04', data: '21/04/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '05', data: '28/04/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '06', data: '05/05/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '07', data: '12/05/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '08', data: '19/05/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '09', data: '26/05/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '10', data: '02/06/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '11', data: '09/06/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '12', data: '16/06/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '13', data: '23/06/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '14', data: '30/06/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '15', data: '07/07/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '16', data: '14/07/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '17', data: '21/07/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '18', data: '28/07/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '19', data: '04/08/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            { n: '20', data: '11/08/2026', valor: 'R$ 20,00', local: 'Magi Games' },
+            // Etapas da nova temporada
+        ],
+        hall: [
+            { etapa: 1, nome: "A Definir", data: "31 MAR", img: "", link: "#", status: 'pending' },
+            { etapa: 2, nome: "A Definir", data: "07 ABR", img: "", link: "#", status: 'pending' },
+            { etapa: 3, nome: "A Definir", data: "14 ABR", img: "", link: "#", status: 'pending' },
+            { etapa: 4, nome: "A Definir", data: "21 ABR", img: "", link: "#", status: 'pending' },
+            { etapa: 5, nome: "A Definir", data: "28 ABR", img: "", link: "#", status: 'pending' },
+            { etapa: 6, nome: "A Definir", data: "05 MAI", img: "", link: "#", status: 'pending' },
+            { etapa: 7, nome: "A Definir", data: "12 MAI", img: "", link: "#", status: 'pending' },
+            { etapa: 8, nome: "A Definir", data: "19 MAI", img: "", link: "#", status: 'pending' },
+            { etapa: 9, nome: "A Definir", data: "26 MAI", img: "", link: "#", status: 'pending' },
+            { etapa: 10, nome: "A Definir", data: "02 JUN", img: "", link: "#", status: 'pending' },
+            { etapa: 11, nome: "A Definir", data: "09 JUN", img: "", link: "#", status: 'pending' },
+            { etapa: 12, nome: "A Definir", data: "16 JUN", img: "", link: "#", status: 'pending' },
+            { etapa: 13, nome: "A Definir", data: "23 JUN", img: "", link: "#", status: 'pending' },
+            { etapa: 14, nome: "A Definir", data: "30 JUN", img: "", link: "#", status: 'pending' },
+            { etapa: 15, nome: "A Definir", data: "07 JUL", img: "", link: "#", status: 'pending' },
+            { etapa: 16, nome: "A Definir", data: "14 JUL", img: "", link: "#", status: 'pending' },
+            { etapa: 17, nome: "A Definir", data: "21 JUL", img: "", link: "#", status: 'pending' },
+            { etapa: 18, nome: "A Definir", data: "28 JUL", img: "", link: "#", status: 'pending' },
+            { etapa: 19, nome: "A Definir", data: "04 AGO", img: "", link: "#", status: 'pending' },
+            { etapa: 20, nome: "A Definir", data: "11 AGO", img: "", link: "#", status: 'pending' }
+        ]
+    }
+};
+
+// --- VARIÁVEIS DE ESTADO DO SISTEMA ---
+let seasonAtiva = 2;
+let SHEET_CSV_URL = CONFIG_SEASONS[2].rankingUrl;
+let META_CSV_URL = CONFIG_SEASONS[2].metaUrl;
+let dadosEtapas = [...CONFIG_SEASONS[2].calendario];
+let hallDaFamaData = [...CONFIG_SEASONS[2].hall];
+let jogadoresRaw = []; 
+let totalEtapasReais = 0;   
+let rankingExibido = []; 
+let rankingFiltrado = [];
+let paginaAtual = 1;
+const jogadoresPorPagina = 8;
+
+async function mudarSeason(num) {
+    seasonAtiva = num;
+    const config = CONFIG_SEASONS[num];
+    
+    const btn1 = document.getElementById('btn-season-1');
+    const btn2 = document.getElementById('btn-season-2');
+    
+    if (num === 1) {
+        btn1.className = "px-6 py-2 rounded-full font-black text-[10px] tracking-[0.2em] uppercase transition-all border-2 border-cpj-blue bg-cpj-blue text-white shadow-lg";
+        btn2.className = "px-6 py-2 rounded-full font-black text-[10px] tracking-[0.2em] uppercase transition-all border-2 border-gray-100 text-gray-400 hover:border-cpj-red hover:text-cpj-red";
+    } else {
+        btn2.className = "px-6 py-2 rounded-full font-black text-[10px] tracking-[0.2em] uppercase transition-all border-2 border-cpj-blue bg-cpj-blue text-white shadow-lg";
+        btn1.className = "px-6 py-2 rounded-full font-black text-[10px] tracking-[0.2em] uppercase transition-all border-2 border-gray-100 text-gray-400 hover:border-cpj-red hover:text-cpj-red";
+    }
+
+    SHEET_CSV_URL = config.rankingUrl;
+    META_CSV_URL = config.metaUrl;
+    dadosEtapas = [...config.calendario];
+    hallDaFamaData = [...config.hall];
+
+    paginaAtual = 1;
+    
+    document.getElementById('tabela-ranking-body').innerHTML = '<tr><td colspan="3" class="p-10 text-center uppercase text-[10px] tracking-widest text-gray-400">Carregando Temporada...</td></tr>';
+    document.getElementById('meta-game-container').innerHTML = '<p class="text-center text-gray-400 text-xs animate-pulse">Atualizando Meta...</p>';
+
+    await carregarRanking();
+    await carregarMetaGame();
+    renderCalendario();
+    renderHall();
+}
+
         // Elementos DOM Ranking
         const selectEtapa = document.getElementById('filtro-etapa');
         const btnVoltarEtapa = document.getElementById('btn-voltar-etapa');
@@ -240,7 +389,9 @@
         // --- 1. RANKING (CARREGAMENTO E LÓGICA BLINDADA) ---
         async function carregarRanking() {
             try {
-                const urlComBypass = `${SHEET_CSV_URL}&t=${Date.now()}`;
+                // Resetar estado para nova carga
+                totalEtapasReais = 0;
+                const urlComBypass = `${SHEET_CSV_URL}${SHEET_CSV_URL.includes('?') ? '&' : '?'}t=${Date.now()}`;
                 const response = await fetch(urlComBypass);
                 const data = await response.text();
                 const linhas = data.split('\n').filter(l => l.trim() !== "");
@@ -267,6 +418,10 @@
                     if (totalEtapasReais === 0) totalEtapasReais = 1;
                     popularDropdownEtapas(totalEtapasReais);
                     calcularERenderizar(totalEtapasReais);
+                } else {
+                    // Caso a planilha esteja vazia (início de season)
+                    document.getElementById('tabela-ranking-body').innerHTML = '<tr><td colspan="3" class="p-10 text-center text-gray-400 text-xs uppercase tracking-widest">Nenhum dado encontrado para esta temporada.</td></tr>';
+                    popularDropdownEtapas(1);
                 }
             } catch (error) {
                 console.error("Erro fatal:", error);
@@ -328,6 +483,17 @@
                 return { ...jog, variacao, posReal: posAtual };
             });
 
+            rankingFiltrado = [...rankingExibido];
+            paginaAtual = 1;
+            document.getElementById('busca-jogador').value = ''; // Reseta busca ao mudar etapa
+            renderTabelaHTML();
+        }
+
+        function filtrarRanking() {
+            const termo = document.getElementById('busca-jogador').value.toLowerCase();
+            rankingFiltrado = rankingExibido.filter(j => 
+                j.nome.toLowerCase().includes(termo)
+            );
             paginaAtual = 1;
             renderTabelaHTML();
         }
@@ -349,18 +515,20 @@
             const tbody = document.getElementById('tabela-ranking-body');
             const inicio = (paginaAtual - 1) * jogadoresPorPagina;
             const fim = inicio + jogadoresPorPagina;
-            const listaParaExibir = rankingExibido.slice(inicio, fim);
+            const listaParaExibir = rankingFiltrado.slice(inicio, fim);
 
             if (listaParaExibir.length === 0) {
-                 tbody.innerHTML = '<tr><td colspan="3" class="p-10 text-center text-gray-400 text-xs uppercase tracking-widest">Calculando...</td></tr>';
+                 tbody.innerHTML = '<tr><td colspan="3" class="p-10 text-center text-gray-400 text-xs uppercase tracking-widest">Nenhum jogador encontrado</td></tr>';
                  return;
             }
 
             tbody.innerHTML = listaParaExibir.map(jogador => {
                 let corPos = 'text-gray-400';
-                if (jogador.posReal === 1) corPos = 'text-yellow-500';
-                if (jogador.posReal === 2) corPos = 'text-gray-400 font-bold';
-                if (jogador.posReal === 3) corPos = 'text-amber-600';
+                let medalha = jogador.posReal + "º";
+                
+                if (jogador.posReal === 1) { corPos = 'text-yellow-500 scale-110'; medalha = "🥇"; }
+                else if (jogador.posReal === 2) { corPos = 'text-slate-400 scale-105'; medalha = "🥈"; }
+                else if (jogador.posReal === 3) { corPos = 'text-amber-700 scale-105'; medalha = "🥉"; }
 
                 let htmlVariacao = '<span class="text-gray-300 text-[10px]">=</span>'; 
                 if (jogador.variacao === 'NEW') {
@@ -372,22 +540,22 @@
                 }
 
                 return `
-                    <tr class="hover:bg-gray-50 transition border-b border-gray-50 last:border-0 h-16">
-                        <td class="font-black text-lg md:text-xl ${corPos} italic text-center align-middle">
-                            <div class="flex flex-col items-center justify-center gap-1"><span>${jogador.posReal}º</span>${htmlVariacao}</div>
+                    <tr class="hover:bg-blue-50/50 transition-all border-b border-gray-50 last:border-0 group/row">
+                        <td class="font-black text-xl md:text-2xl ${corPos} italic text-center align-middle transition-all">
+                            <div class="flex flex-col items-center justify-center gap-1 py-4"><span>${medalha}</span>${htmlVariacao}</div>
                         </td>
-                        <td class="font-bold text-gray-800 uppercase tracking-tight text-left align-middle text-xs md:text-sm pl-2"><div class="truncate w-full pr-2">${jogador.nome}</div></td>
-                        <td class="text-right font-black text-[#0a2240] italic align-middle text-sm md:text-lg pr-4">${jogador.total} <span class="text-[8px] md:text-[10px] text-gray-400 font-normal not-italic">PTS</span></td>
+                        <td class="font-bold text-gray-800 uppercase tracking-tight text-left align-middle text-[11px] md:text-sm pl-2 py-4"><div class="truncate w-full pr-2 group-hover/row:text-cpj-blue transition-colors">${jogador.nome}</div></td>
+                        <td class="text-right font-black text-[#0a2240] italic align-middle text-sm md:text-lg pr-4 py-4">${jogador.total} <span class="text-[8px] md:text-[10px] text-gray-400 font-normal not-italic">PTS</span></td>
                     </tr>
                 `;
             }).join(''); 
 
             document.getElementById('info-pagina').innerText = `Página ${paginaAtual}`;
-            if(rankingExibido.length > 0) {
-                 document.getElementById('info-posicao').innerText = `Mostrando ${inicio + 1}-${Math.min(fim, rankingExibido.length)}`;
+            if(rankingFiltrado.length > 0) {
+                 document.getElementById('info-posicao').innerText = `Mostrando ${inicio + 1}-${Math.min(fim, rankingFiltrado.length)}`;
             }
             document.getElementById('btn-prev').disabled = paginaAtual === 1;
-            document.getElementById('btn-next').disabled = fim >= rankingExibido.length;
+            document.getElementById('btn-next').disabled = fim >= rankingFiltrado.length;
         }
 
         selectEtapa.addEventListener('change', (e) => calcularERenderizar(e.target.value));
@@ -398,20 +566,7 @@
         }
 
         // --- 2. CALENDÁRIO AUTOMÁTICO ---
-        const dadosEtapas = [
-            { n: '01', data: '06/01/2026', valor: 'R$ 20,00', local: 'Magi Games' },
-            { n: '02', data: '13/01/2026', valor: 'R$ 20,00', local: 'Magi Games' },
-            { n: '03', data: '20/01/2026', valor: 'R$ 20,00', local: 'Magi Games' },
-            { n: '04', data: '27/01/2026', valor: 'R$ 20,00', local: 'Magi Games' },
-            { n: '05', data: '03/02/2026', valor: 'R$ 20,00', local: 'Magi Games' },
-            { n: '06', data: '10/02/2026', valor: 'R$ 20,00', local: 'Magi Games' },
-            { n: '07', data: '18/02/2026', valor: 'R$ 20,00', local: 'Magi Games' },
-            { n: '08', data: '24/02/2026', valor: 'R$ 20,00', local: 'Magi Games' },
-            { n: '09', data: '03/03/2026', valor: 'R$ 20,00', local: 'Magi Games' },
-            { n: '10', data: '10/03/2026', valor: 'R$ 20,00', local: 'Magi Games' }
-        ];
         let calExpandido = false;
-
         function renderCalendario() {
             const container = document.getElementById('calendario-container');
             const listaParaExibir = calExpandido ? dadosEtapas : dadosEtapas.slice(0, 5); 
@@ -435,10 +590,10 @@
                     badge = '<span class="bg-green-100 text-green-700 border border-green-200 px-2 py-1 rounded text-[9px] font-black uppercase tracking-widest">Concluído</span>';
                 } else if (status === 'next') {
                     visualClasses = 'border-red-600 shadow-lg ring-1 ring-red-100 bg-white transform scale-[1.02]';
-                    badge = '<span class="bg-red-600 text-white px-3 py-1 rounded text-[9px] font-black uppercase tracking-widest animate-pulse shadow-md">Próxima Etapa</span>';
+                    badge = '<span class="bg-red-600 text-white px-3 py-1 rounded text-[9px] font-black uppercase tracking-widest animate-pulse shadow-md flex items-center gap-1"><span class="w-1.5 h-1.5 bg-white rounded-full"></span>Próxima Etapa</span>';
                 }
                 return `
-                <div class="flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border transition-all group ${visualClasses}">
+                <div class="flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border-2 transition-all group ${visualClasses}">
                     <div class="mb-3 md:mb-0 flex flex-col gap-2">
                         <div class="flex items-center gap-3">
                             <span class="text-[9px] font-black ${status === 'next' ? 'text-red-600' : 'text-gray-400'} uppercase tracking-widest">Etapa ${e.n}</span>
@@ -464,29 +619,15 @@
         }
 
         // --- 3. HALL DA FAMA (CORRIGIDO E COM BOTÃO "MOSTRAR MAIS") ---
-        const hallDaFamaData = [
-            { etapa: 1, nome: "Gustavo Schwarz", deck: "UB Crab Control", img: "img/ETAPA01.JPG", link: "https://moxfield.com/decks/w9Uy3gzcSkKHqNWUzrCY0w", status: 'done' },
-            { etapa: 2, nome: "Eron Moggio", deck: "BW Blade", img: "img/ETAPA02.JPG", link: "https://moxfield.com/decks/21u9iqGsAke7C-Y1ae2zog", status: 'done' },
-            { etapa: 3, nome: "Eron Moggio", deck: "BW Blade", img: "img/ETAPA03.JPG", link: "https://moxfield.com/decks/21u9iqGsAke7C-Y1ae2zog", status: 'done' },
-            { etapa: 4, nome: "Guilherme Watzko", deck: "Mono U Faeries", img: "img/etapa04new.jpg.jpg", link: "https://moxfield.com/decks/9jV1Fkom20iPtPOreU1_9Q", status: 'done' },
-            { etapa: 5, nome: "William Kock", deck: "Jund Wildfire", img: "img/etapa05new.jpg.jpg", link: "https://moxfield.com/decks/c252cPSvKEWPNHojEZMe1g", status: 'done' },
-            { etapa: 6, nome: "Raphael Günther", deck: "Mono U Terror", img: "img/etapa06new.jpg.jpg", link: "https://moxfield.com/decks/6xUPqc0bIUmlgcZdy6JdYw", status: 'done' },
-            { etapa: 7, nome: "Eron Moggio", deck: "Caw Gates", img: "img/ETAPA03.JPG", link: "https://moxfield.com/decks/3Yv_LhtJrUqo-C2ivwN05A", status: 'done' },
-            { etapa: 8, nome: "Guilherme Watzko", deck: "Mono U Faeries", img: "img/etapa04new.jpg.jpg", link: "https://moxfield.com/decks/9jV1Fkom20iPtPOreU1_9Q", status: 'done' },
-            { etapa: 9, nome: "Guilherme Grabowski", deck: "BG Food", img: "img/etapa09new.jpg", link: "https://moxfield.com/decks/RAQNqyZy1Equx1yZsFvd9Q", status: 'done' },
-            { etapa: 10, nome: "A Definir", data: "10 MAR", img: "", link: "#", status: 'pending' }
-        ];
-
         let mostrarTodosHall = false; // Estado para controlar se mostra tudo ou só 5
-
 function renderHall() {
             const container = document.getElementById('hall-container');
             const btnContainer = document.getElementById('hall-btn-container');
             const btnText = document.getElementById('btn-hall-text');
             const btnIcon = document.getElementById('btn-hall-icon');
 
-            // Decide se mostra todos ou apenas os 5 primeiros
-            const listaParaExibir = mostrarTodosHall ? hallDaFamaData : hallDaFamaData.slice(0, 10);
+            // Decide se mostra todos ou apenas a primeira fileira (5 cards)
+            const listaParaExibir = mostrarTodosHall ? hallDaFamaData : hallDaFamaData.slice(0, 5);
 
             container.innerHTML = listaParaExibir.map(item => {
                 if (item.status === 'done') {
@@ -495,8 +636,8 @@ function renderHall() {
                     <div class="group relative mt-12 h-full">
                         <div class="bg-white rounded-2xl shadow-md p-6 pt-16 text-center border-t-4 border-red-600 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 h-full flex flex-col justify-between relative">
                             
-                            <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 w-24 h-24 rounded-full border-[6px] border-white shadow-lg overflow-hidden z-10 bg-gray-100">
-                                <img src="${item.img}" alt="Campeão" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 w-24 h-24 rounded-full border-[6px] border-white shadow-xl overflow-hidden z-10 bg-gray-100 ring-4 ring-red-500/10 group-hover:ring-red-500/30 transition-all duration-500">
+                                <img src="${item.img}" onerror="this.src='img/logo-cpj.png'; this.style.opacity='0.2'; this.style.padding='10px';" alt="Campeão" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-110">
                             </div>
 
                             <div class="mt-2">
@@ -518,13 +659,12 @@ function renderHall() {
                 } else {
                     // --- CARD BLOQUEADO (MANTIDO O ESTILO LIMPO) ---
                     return `
-                    <div class="relative mt-12 h-full opacity-60 hover:opacity-100 transition-opacity duration-300">
-                        <div class="bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 p-6 pt-16 text-center h-full flex flex-col justify-between relative">
+                    <div class="relative mt-12 h-full opacity-50 hover:opacity-80 transition-all duration-300 transform hover:scale-[0.98]">
+                        <div class="bg-gray-50/50 rounded-2xl border-2 border-dashed border-gray-200 p-6 pt-16 text-center h-full flex flex-col justify-between relative">
                             
-                            <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 w-24 h-24 rounded-full border-[6px] border-white shadow-sm bg-gray-100 flex items-center justify-center z-10 text-gray-300">
-                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                            <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 w-24 h-24 rounded-full border-[6px] border-white shadow-md bg-gray-100 flex items-center justify-center z-10 text-gray-300 animate-pulse ring-4 ring-gray-50/50">
+                                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                             </div>
-
                             <div class="mt-2">
                                 <span class="inline-block bg-gray-100 text-gray-300 text-[9px] font-black tracking-[0.2em] uppercase px-2 py-1 rounded-full mb-3">
                                     Etapa #${item.etapa.toString().padStart(2, '0')}
@@ -563,7 +703,9 @@ function renderHall() {
         let metaExpandido = false;
         async function carregarMetaGame() {
             try {
-                const response = await fetch(META_CSV_URL);
+                // Adicionado bypass de cache também para o Meta Game
+                const urlComBypass = `${META_CSV_URL}${META_CSV_URL.includes('?') ? '&' : '?'}t=${Date.now()}`;
+                const response = await fetch(urlComBypass);
                 const data = await response.text();
                 const linhas = data.split('\n').filter(l => l.trim() !== "");
                 let totalDecks = 0;
@@ -590,8 +732,19 @@ function renderHall() {
             const listaParaExibir = metaExpandido ? metaDadosCache : metaDadosCache.slice(0, 4);
             container.innerHTML = '';
             listaParaExibir.forEach(deck => {
-                const porcentagem = ((deck.qtd / deck.totalGeral) * 100).toFixed(1); 
-                container.innerHTML += `<div class="group animate-in fade-in slide-in-from-bottom-4 duration-700"><div class="flex justify-between text-sm font-bold text-[#0a2240] uppercase tracking-wider mb-2"><span>${deck.nome}</span><span>${porcentagem}% <span class="text-[9px] text-gray-400 font-normal">(${deck.qtd})</span></span></div><div class="w-full bg-gray-100 rounded-full h-3 overflow-hidden"><div class="bg-red-600 h-3 rounded-full group-hover:bg-[#0a2240] transition-all duration-1000" style="width: ${porcentagem}%"></div></div></div>`;
+                const porcentagem = ((deck.qtd / deck.totalGeral) * 100).toFixed(1);
+                container.innerHTML += `
+                    <div class="group animate-in fade-in slide-in-from-bottom-4 duration-700">
+                        <div class="flex justify-between text-[11px] font-black text-[#0a2240] uppercase tracking-widest mb-2.5">
+                            <span>${deck.nome}</span>
+                            <span class="text-red-600 font-black">${porcentagem}% <span class="text-gray-400 font-bold ml-1">(${deck.qtd})</span></span>
+                        </div>
+                        <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden shadow-inner border border-gray-50">
+                            <div class="bg-gradient-to-r from-red-600 to-red-800 h-full rounded-full group-hover:from-[#0a2240] group-hover:to-blue-900 transition-all duration-700 relative overflow-hidden" style="width: ${porcentagem}%">
+                                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent w-full h-full -skew-x-12 -translate-x-full" style="animation: shimmer 3s infinite;"></div>
+                            </div>
+                        </div>
+                    </div>`;
             });
             if (metaDadosCache.length > 4) {
                 btnContainer.classList.remove('hidden');
@@ -606,11 +759,15 @@ function renderHall() {
             renderMetaVisual(); 
         }
 
-        // --- INICIALIZAÇÃO ---
-        carregarRanking();
-        renderCalendario();
-        carregarMetaGame();
-        renderHall(); // Inicia o Hall da Fama
+        // --- INICIALIZAÇÃO ÚNICA ---
+        window.addEventListener('DOMContentLoaded', () => mudarSeason(seasonAtiva));
+
+        // Listener para o botão Voltar ao Topo
+        window.addEventListener('scroll', () => {
+            const btn = document.getElementById('backToTop');
+            if (window.scrollY > 500) btn.classList.add('show');
+            else btn.classList.remove('show');
+        });
 
         function toggleMenu() {
             const menu = document.getElementById('mobile-menu-overlay');
